@@ -3,12 +3,12 @@ require_relative 'test_helper'
 describe "DateRange" do
   
   describe "#initialize" do
-    # let(:aug_first) {
-    #   Date.parse("august 1 2019")
-    # }
-    # let(:aug_third) {
-    #   Date.parse("august 3 2019")
-    # }
+    let(:aug_first) {
+      Date.parse("august 1 2019")
+    }
+    let(:aug_third) {
+      Date.parse("august 3 2019")
+    }
     let(:daterange) {
       HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
     }
@@ -19,18 +19,20 @@ describe "DateRange" do
     
     # verifies initialized data was saved.
     it "can read a start_date" do
-      expect(daterange.start_date).must_equal "august 1 2019"
+      expect(daterange.start_date).must_equal aug_first
     end
     
     it "can read an end_date" do
-      expect(daterange.end_date).must_equal "august 3 2019"
+      expect(daterange.end_date).must_equal aug_third
     end
     
     # verifies initialized data is the correct format.
     it "saves start_date as a Date Object" do
+      expect(daterange.start_date).must_be_instance_of Date
     end
     
     it "saves end_date as a Date Object" do
+      expect(daterange.end_date).must_be_instance_of Date
     end
     
   end
@@ -52,11 +54,6 @@ end
 #   * checks if date range is valid
 #   *   (e.g. end_date is not before start_date, end_date and start_date aren't the same date)
 #   * returns a boolean
-
-# + DateRange.parse()
-#   * inputs: a date
-#   * transforms intputs into Dates using Date.parse()
-#   * returns a Date
 
 # + DateRange#how_many_nights?()
 #   * inputs: none. called on a DateRange instance.
