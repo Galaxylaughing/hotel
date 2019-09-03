@@ -83,7 +83,7 @@ Remember: Your job is to only build the classes that store information and handl
 
 - As a user of the hotel system...
   - I can access the list of all of the rooms in the hotel
-  - I can get a reservation of a room for a given date range
+  - I can make a reservation of a room for a given date range
   - I can access the list of reservations for a specific date, so that I can track reservations by date
   - I can get the total cost for a given reservation
   - I want exception raised when an invalid date range is provided, so that I can't make a reservation for an invalid date range
@@ -107,7 +107,7 @@ Remember: Your job is to only build the classes that store information and handl
 
 - As a user of the hotel system...
   - I can view a list of rooms that are not reserved for a given date range, so that I can see all available rooms for that day
-  - I can get a reservation of a room for a given date range, and that room will not be part of any other reservation overlapping that date range
+  - I can make a reservation of a room for a given date range, and that room will not be part of any other reservation overlapping that date range
   - I want an exception raised if I try to reserve a room during a date range when all rooms are reserved, so that I cannot make two reservations for the same room that overlap by date
 
 #### Details
