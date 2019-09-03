@@ -26,6 +26,10 @@ describe "DateRange" do
       expect(daterange.end_date).must_equal aug_third
     end
     
+    it "can read nights" do
+      expect(daterange.nights).must_equal 2
+    end
+    
     # verifies initialized data is the correct format.
     it "saves start_date as a Date Object" do
       expect(daterange.start_date).must_be_instance_of Date
@@ -33,6 +37,10 @@ describe "DateRange" do
     
     it "saves end_date as a Date Object" do
       expect(daterange.end_date).must_be_instance_of Date
+    end
+    
+    it "saves nights as an Integer" do
+      expect(daterange.nights).must_be_instance_of Integer
     end
     
     # verifies constructor won't permit invalid inputs
@@ -72,6 +80,37 @@ describe "DateRange" do
       result = HotelBooking::DateRange.is_valid?(aug_third, aug_first)
       expect(result).must_equal false
     end
+  end
+  
+  describe ".count_nights" do
+    let(:aug_first) {
+      Date.parse("august 1 2019")
+    }
+    let(:aug_second) {
+      Date.parse("august 2 2019")
+    }
+    let(:aug_third) {
+      Date.parse("august 3 2019")
+    }
+    let(:aug_ninth) {
+      Date.parse("august 9 2019")
+    }
+    
+    it "returns one if given a range with one night" do
+      one_night = HotelBooking::DateRange.count_nights(aug_first, aug_second)
+      expect(one_night).must_equal 1
+    end
+    
+    it "returns two if given a range with two nights" do
+      two_nights = HotelBooking::DateRange.count_nights(aug_first, aug_third)
+      expect(two_nights).must_equal 2
+    end
+    
+    it "returns eight if given a range with eight nights" do
+      eight_nights = HotelBooking::DateRange.count_nights(aug_first, aug_ninth)
+      expect(eight_nights).must_equal 8
+    end
+    
   end
   
 end
