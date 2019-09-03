@@ -35,25 +35,43 @@ describe "DateRange" do
       expect(daterange.end_date).must_be_instance_of Date
     end
     
+    # verifies constructor won't permit invalid inputs
+    it "raises an exception for invalid ranges" do
+      expect {
+        HotelBooking::DateRange.new("august 3 2019", "august 1 2019")
+      }.must_raise ArgumentError
+    end
+    
+    # confirms that Date will execute an "invalid date" ArgumentError
+    it "raises an exception if inputs cannot be parsed into dates" do
+      expect {
+        HotelBooking::DateRange.new("cookie", "chocolate chip")
+      }.must_raise ArgumentError
+    end
   end
   
   describe ".is_valid?" do
+    let(:aug_first) {
+      Date.parse("august 1 2019")
+    }
+    let(:aug_third) {
+      Date.parse("august 3 2019")
+    }
     
     it "returns true if given valid dates" do
-      result = HotelBooking::DateRange.is_valid?("august 1 2019", "august 3 2019")
+      result = HotelBooking::DateRange.is_valid?(aug_first, aug_third)
       expect(result).must_equal true
     end
     
     it "returns false if the start_date and end_date are the same" do
-      result = HotelBooking::DateRange.is_valid?("august 1 2019", "august 1 2019")
+      result = HotelBooking::DateRange.is_valid?(aug_first, aug_first)
       expect(result).must_equal false
     end
     
     it "returns false if the end_date precedes the start_date" do
-      result = HotelBooking::DateRange.is_valid?("august 3 2019", "august 1 2019")
+      result = HotelBooking::DateRange.is_valid?(aug_third, aug_first)
       expect(result).must_equal false
     end
-    
   end
   
 end
