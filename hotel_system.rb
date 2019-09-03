@@ -6,6 +6,6 @@ module HotelBooking; end
 
 # all of our data classes that live in the module
 require_relative "lib/daterange"
-require_relative "lib/hotelmanager"
 require_relative "lib/reservation"
+require_relative "lib/hotelmanager"
 require_relative "lib/room"
