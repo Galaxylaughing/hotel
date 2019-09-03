@@ -9,5 +9,10 @@ module HotelBooking
       @dates = DateRange.new(start_date, end_date)
     end
     
+    def total_cost()
+      total_cost = cost_per_night * dates.nights
+      return total_cost
+    end
+    
   end  
 end
