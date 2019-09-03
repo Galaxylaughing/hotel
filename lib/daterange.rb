@@ -8,5 +8,12 @@ module HotelBooking
       @end_date = Date.parse(end_date)
     end
     
+    def self.is_valid?(start_date, end_date)
+      start_date = Date.parse(start_date)
+      end_date = Date.parse(end_date)
+      
+      return ((end_date - start_date) > 0) ? true : false      
+    end
+    
   end
 end

@@ -2,7 +2,7 @@ require_relative 'test_helper'
 
 describe "DateRange" do
   
-  describe "#initialize" do
+  describe ".initialize" do
     let(:aug_first) {
       Date.parse("august 1 2019")
     }
@@ -37,23 +37,28 @@ describe "DateRange" do
     
   end
   
+  describe ".is_valid?" do
+    
+    it "returns true if given valid dates" do
+      result = HotelBooking::DateRange.is_valid?("august 1 2019", "august 3 2019")
+      expect(result).must_equal true
+    end
+    
+    it "returns false if the start_date and end_date are the same" do
+      result = HotelBooking::DateRange.is_valid?("august 1 2019", "august 1 2019")
+      expect(result).must_equal false
+    end
+    
+    it "returns false if the end_date precedes the start_date" do
+      result = HotelBooking::DateRange.is_valid?("august 3 2019", "august 1 2019")
+      expect(result).must_equal false
+    end
+    
+  end
+  
 end
 
 ## DateRange notes
-
-# You could have a DateRange class, an instance of which is assigned to each Reservation.
-#  - (integer) start_date
-#  - (integer) end_date
-
-# + DateRange.initialize()
-#   * inputs: start_date, end_date
-#   * transforms intputs into Dates using DateRange.parse()
-
-# + DateRange.is_valid?()
-#   * inputs: start_date, end_date
-#   * checks if date range is valid
-#   *   (e.g. end_date is not before start_date, end_date and start_date aren't the same date)
-#   * returns a boolean
 
 # + DateRange#how_many_nights?()
 #   * inputs: none. called on a DateRange instance.
