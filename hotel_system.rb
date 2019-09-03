@@ -1,5 +1,5 @@
 # gems any your project needs
-
+require 'date'
 
 # our namespace module
 module HotelBooking; end
