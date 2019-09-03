@@ -3,17 +3,27 @@ require_relative 'test_helper'
 describe "DateRange" do
   
   describe "#initialize" do
+    # let(:aug_first) {
+    #   Date.parse("august 1 2019")
+    # }
+    # let(:aug_third) {
+    #   Date.parse("august 3 2019")
+    # }
+    let(:daterange) {
+      HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
+    }
     
     it "can create a DateRange Object" do
-      daterange = HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
       expect(daterange).must_be_instance_of HotelBooking::DateRange
     end
     
     # verifies initialized data was saved.
     it "can read a start_date" do
+      expect(daterange.start_date).must_equal "august 1 2019"
     end
     
     it "can read an end_date" do
+      expect(daterange.end_date).must_equal "august 3 2019"
     end
     
     # verifies initialized data is the correct format.
