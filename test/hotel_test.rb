@@ -147,18 +147,8 @@ describe "Hotel" do
     end
     
     it "adds a Reservation to the Hotel's list" do
-      # expect(hotel.reservations).must_include new_reservation
+      expect(hotel.reservations).must_include new_reservation
     end
-    
-    # + Hotel#make_reservation()
-    #   * inputs: start_date, end_date
-    #   * raises exception if given an invalid date range
-    #   * finds Room that is available on those dates
-    #   * creates Reservation instance with those dates
-    #   * adds Reservation instance to Hotel@reservations
-    # // or should Reservation.initialize add to Hotel@reservations?
-    #   * returns a Reservation instance
-    
   end
   
 end

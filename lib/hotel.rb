@@ -32,7 +32,7 @@ module HotelBooking
       new_reservation = Reservation.new(chosen_room, start_date, end_date)
       
       chosen_room.add_reservation(new_reservation)
-      # hotel.add_reservation(new_reservation)
+      self.add_reservation(new_reservation)
       
       return new_reservation
     end
