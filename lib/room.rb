@@ -17,7 +17,7 @@ module HotelBooking
         raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{new_reservation}")
       end
       
-      unless new_reservation.room == number
+      unless new_reservation.room.number == number
         raise ArgumentError.new("Invalid reservation; expected a reservation for room #{number} but received a reservation for room #{new_reservation.room}")
       end
       

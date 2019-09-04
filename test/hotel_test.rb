@@ -6,6 +6,9 @@ describe "Hotel" do
     let(:hotel) {
       HotelBooking::Hotel.new(20, 200.00)
     }
+    let(:room) {
+      HotelBooking::Room.new(2)
+    }
     
     it "can create a Hotel Object" do
       expect(hotel).must_be_instance_of HotelBooking::Hotel
@@ -30,7 +33,7 @@ describe "Hotel" do
     end
     
     it "can add a Reservation to its list" do
-      new_reservation = HotelBooking::Reservation.new(2, "september 1 2019", "september 5 2019")
+      new_reservation = HotelBooking::Reservation.new(room, "september 1 2019", "september 5 2019")
       hotel.reservations << new_reservation
       expect(hotel.reservations.length).must_equal 1
     end
@@ -71,6 +74,57 @@ describe "Hotel" do
         hotel.load_rooms("20")
       }.must_raise ArgumentError
     end
+    
+  end
+  
+  describe "#make_reservation" do
+    let(:hotel) {
+      HotelBooking::Hotel.new(20, 200.00)
+    }
+    let(:new_reservation) {
+      hotel.make_reservation("march 1 2019", "march 4 2019")
+    }
+    
+    it "takes only two inputs, a start date and an end date" do
+      expect {
+        hotel.make_reservation(3, "march 1 2019", "march 4 2019")
+      }.must_raise ArgumentError
+    end
+    
+    it "raises an exception for invalid dates" do
+      expect {
+        hotel.make_reservation("cookie", "cereal")
+      }.must_raise ArgumentError
+    end
+    
+    it "instantiates a Reservation instance" do
+      expect(new_reservation).must_be_instance_of HotelBooking::Reservation
+    end
+    
+    it "creates a Reservation with the right start_date" do
+      expect(new_reservation.dates.start_date.to_s).must_equal "2019-03-01"
+    end
+    
+    it "creates a Reservation with the right end_date" do
+      expect(new_reservation.dates.end_date.to_s).must_equal "2019-03-04"
+    end
+    
+    it "adds a Reservation to a Room's list" do
+      expect(new_reservation.room.reservations).must_include new_reservation
+    end
+    
+    it "adds a Reservation to the Hotel's list" do
+      # expect(hotel.reservations).must_include new_reservation
+    end
+    
+    # + Hotel#make_reservation()
+    #   * inputs: start_date, end_date
+    #   * raises exception if given an invalid date range
+    #   * finds Room that is available on those dates
+    #   * creates Reservation instance with those dates
+    #   * adds Reservation instance to Hotel@reservations
+    # // or should Reservation.initialize add to Hotel@reservations?
+    #   * returns a Reservation instance
     
   end
   

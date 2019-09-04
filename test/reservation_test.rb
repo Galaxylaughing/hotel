@@ -3,17 +3,26 @@ require_relative 'test_helper'
 describe "Reservation" do
   
   describe "initialize" do
+    let(:room_one) {
+      HotelBooking::Room.new(1)
+    }
     let(:reservation) {
-      HotelBooking::Reservation.new(1, "august 1 2019", "august 3 2019", 200.00)
+      HotelBooking::Reservation.new(room_one, "august 1 2019", "august 3 2019", 200.00)
     }
     
     it "creates a Reservation Object" do
       expect(reservation).must_be_instance_of HotelBooking::Reservation
     end
     
+    it "raises an exception if handed a non-Room" do
+      expect {
+        HotelBooking::Reservation.new(1, "august 1 2019", "august 3 2019", 200.00)
+      }.must_raise ArgumentError
+    end
+    
     # verifies initialized data was saved.
     it "can read its room number" do
-      expect(reservation.room).must_equal 1
+      expect(reservation.room.number).must_equal 1
     end
     
     it "knows its price per night" do
@@ -35,11 +44,14 @@ describe "Reservation" do
   end
   
   describe "#total_cost" do
+    let(:room_one) {
+      HotelBooking::Room.new(1)
+    }
     let(:reservation_one) {
-      HotelBooking::Reservation.new(1, "august 1 2019", "august 3 2019", 200.00)
+      HotelBooking::Reservation.new(room_one, "august 1 2019", "august 3 2019", 200.00)
     }
     let(:reservation_two) {
-      HotelBooking::Reservation.new(1, "august 1 2019", "august 30 2019", 200.00)
+      HotelBooking::Reservation.new(room_one, "august 1 2019", "august 30 2019", 200.00)
     }
     
     it "returns a float" do

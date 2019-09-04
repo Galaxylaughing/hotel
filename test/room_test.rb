@@ -29,7 +29,8 @@ describe "Room" do
     end
     
     it "can add a Reservation to its list" do
-      reservation_one = HotelBooking::Reservation.new(1, "august 1", "august 5")
+      room = HotelBooking::Room.new(1)
+      reservation_one = HotelBooking::Reservation.new(room, "august 1", "august 5")
       room.reservations << reservation_one
       expect(room.reservations.length).must_equal 1
     end
@@ -37,27 +38,30 @@ describe "Room" do
   end
   
   describe "#add_reservation" do
-    let(:room) {
+    let(:room_one) {
       HotelBooking::Room.new(1)
+    }
+    let(:room_three) {
+      HotelBooking::Room.new(3)
     }
     
     it "can add a new reservation" do
-      new_reservation = HotelBooking::Reservation.new(1, "august 1", "august 5")
-      room.add_reservation(new_reservation)
-      expect(room.reservations.length).must_equal 1
+      new_reservation = HotelBooking::Reservation.new(room_one, "august 1", "august 5")
+      room_one.add_reservation(new_reservation)
+      expect(room_one.reservations.length).must_equal 1
     end
     
     it "raises an exception if handed a Reservation with a non-matching room number" do
-      new_reservation = HotelBooking::Reservation.new(3, "august 1", "august 5")
+      new_reservation = HotelBooking::Reservation.new(room_three, "august 1", "august 5")
       expect {
-        room.add_reservation(new_reservation)
+        room_one.add_reservation(new_reservation)
       }.must_raise ArgumentError
     end
     
     it "raises an exception for an argument that isn't a Reservation Object" do
       new_reservation = "august 10th"
       expect {
-        room.add_reservation(new_reservation)
+        room_one.add_reservation(new_reservation)
       }.must_raise ArgumentError
     end
     
@@ -76,8 +80,8 @@ describe "Room" do
     end
     
     it "is available if none of its reservations overlap" do
-      reservation_one = HotelBooking::Reservation.new(19, "august 1 2019", "august 8 2019")
-      reservation_two = HotelBooking::Reservation.new(19, "august 12 2019", "august 14 2019")
+      reservation_one = HotelBooking::Reservation.new(room, "august 1 2019", "august 8 2019")
+      reservation_two = HotelBooking::Reservation.new(room, "august 12 2019", "august 14 2019")
       
       room.reservations << reservation_one
       room.reservations << reservation_two
@@ -86,8 +90,8 @@ describe "Room" do
     end
     
     it "is not available if it has a single overlapping reservation" do
-      reservation_one = HotelBooking::Reservation.new(19, "august 1 2019", "august 8 2019")
-      reservation_two = HotelBooking::Reservation.new(19, "october 2 2019", "october 6 2019")
+      reservation_one = HotelBooking::Reservation.new(room, "august 1 2019", "august 8 2019")
+      reservation_two = HotelBooking::Reservation.new(room, "october 2 2019", "october 6 2019")
       
       room.reservations << reservation_one
       room.reservations << reservation_two
@@ -96,8 +100,8 @@ describe "Room" do
     end
     
     it "is not available if it has multiple overlapping reservations" do
-      reservation_one = HotelBooking::Reservation.new(19, "september 30 2019", "october 2 2019")
-      reservation_two = HotelBooking::Reservation.new(19, "october 2 2019", "october 6 2019")
+      reservation_one = HotelBooking::Reservation.new(room, "september 30 2019", "october 2 2019")
+      reservation_two = HotelBooking::Reservation.new(room, "october 2 2019", "october 6 2019")
       
       room.reservations << reservation_one
       room.reservations << reservation_two
