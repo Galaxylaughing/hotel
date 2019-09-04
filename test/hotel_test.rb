@@ -151,4 +151,103 @@ describe "Hotel" do
     end
   end
   
+  describe "#find_by_date" do
+    let(:hotel) {
+      HotelBooking::Hotel.new(20, 200.00)
+    }
+    let(:room) {
+      HotelBooking::Room.new(4)
+    }
+    let(:start_date) {
+      "feb 3 2019"
+    }
+    let(:end_date) {
+      "feb 6 2019"
+    }
+    
+    # test cases
+    # 		3	4	5	6				= original range
+    #     3	4	5	6				=> overlaps completely
+    # 	    4	5					=> overlaps middle only
+    #   2	3	4						=> overlaps beginning
+    #		      5	6	7			=> overlaps end
+    # 1	2	3							=> checkout day overlaps checkin day
+    #		        6	7	8		=> checkin day overlaps checkout day
+    
+    it "should return: reservation that overlaps completely" do
+      total_overlap = HotelBooking::Reservation.new(room, start_date, end_date)
+      hotel.reservations << total_overlap
+      
+      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      expect(overlapping_reservations).must_include total_overlap
+    end
+    
+    it "should return: reservation that overlaps the input's middle" do
+      middle_overlap = HotelBooking::Reservation.new(room, "feb 4 2019", "feb 5 2019")
+      hotel.reservations << middle_overlap
+      
+      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      expect(overlapping_reservations).must_include middle_overlap
+    end
+    
+    it "should return: reservation that overlaps the input's first two days" do
+      beginning_overlap = HotelBooking::Reservation.new(room, "feb 2 2019", "feb 4 2019")
+      hotel.reservations << beginning_overlap
+      
+      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      expect(overlapping_reservations).must_include beginning_overlap
+    end
+    
+    it "should return: reservation that overlaps the input's last two days" do
+      ending_overlap = HotelBooking::Reservation.new(room, "feb 5 2019", "feb 7 2019")
+      hotel.reservations << ending_overlap
+      
+      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      expect(overlapping_reservations).must_include ending_overlap
+    end
+    
+    it "returns a collection of reservations" do
+      beginning_overlap = HotelBooking::Reservation.new(room, "feb 2 2019", "feb 4 2019")
+      ending_overlap = HotelBooking::Reservation.new(room, "feb 5 2019", "feb 7 2019")
+      
+      hotel.reservations << beginning_overlap
+      hotel.reservations << ending_overlap
+      
+      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      expect(overlapping_reservations).must_be_instance_of Array
+      
+      overlapping_reservations.each do |single_reservation|
+        expect(single_reservation).must_be_instance_of HotelBooking::Reservation
+      end
+    end
+    
+    # should it include reservations that only overlap on the last day, checkout day?
+    # The user story says they want to be able to "track reservations by date,
+    # but doesn't why they want this functionality.
+    # If you want to know how many people are in the hotel,
+    # you'd want a reservation that begins on another reservation's end day to count as an overlap.
+    # If you want to know how many ongoing reservations are in a day,
+    # perhaps you'd want to exclude reservations that are ending.
+    # If you want to know how many people are in the hotel, I think you wouldn't look at the number of reservations, as they don't yet count guests.
+    # So I'm going to assume you want only ongoing reservations.
+    # aka, how many nights have been reserved during this range?
+    
+    it "should not return: reservation that ends on the input's check-in day" do
+      overlaps_checkin = HotelBooking::Reservation.new(room, "feb 1 2019", "feb 3 2019")
+      hotel.reservations << overlaps_checkin
+      
+      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      expect(overlapping_reservations).wont_include overlaps_checkin
+    end
+    
+    it "should not return: reservation that begins on the input's check-out day" do
+      overlaps_checkout = HotelBooking::Reservation.new(room, "feb 6 2019", "feb 8 2019")
+      hotel.reservations << overlaps_checkout
+      
+      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      expect(overlapping_reservations).wont_include overlaps_checkout
+    end
+    
+  end
+  
 end

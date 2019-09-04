@@ -25,11 +25,12 @@ module HotelBooking
     end
     
     def overlaps?(other_range)
-      if (self.start_date == other_range.start_date) || (self.end_date == other_range.end_date) || (other_range.start_date - self.end_date).to_i < 0
-        return true
-      else
-        return false
-      end
+      range_one = self.start_date...self.end_date
+      range_two = other_range.start_date...other_range.end_date
+      
+      overlap = range_one.cover?(range_two.first) || range_two.cover?(range_one.first)
+      
+      return overlap ? true : false
     end
     
   end
