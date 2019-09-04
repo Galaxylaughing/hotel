@@ -77,6 +77,39 @@ describe "Hotel" do
     
   end
   
+  describe "#add_reservation" do
+    let(:hotel) {
+      HotelBooking::Hotel.new(20, 200.00)
+    }
+    let(:room) {
+      HotelBooking::Room.new(1)
+    }
+    
+    it "can add one new Reservation" do
+      expect(hotel.reservations.length).must_equal 0
+      new_reservation = HotelBooking::Reservation.new(room, "january 1, 2019", "january 3, 2019")
+      hotel.add_reservation(new_reservation)
+      expect(hotel.reservations.length).must_equal 1      
+    end
+    
+    it "can add multiple new Reservations" do
+      expect(hotel.reservations.length).must_equal 0
+      first_reservation = HotelBooking::Reservation.new(room, "january 1, 2019", "january 3, 2019")
+      second_reservation = HotelBooking::Reservation.new(room, "january 8, 2019", "january 12, 2019")
+      hotel.add_reservation(first_reservation)
+      hotel.add_reservation(second_reservation)
+      expect(hotel.reservations.length).must_equal 2
+    end
+    
+    it "raises an exception for an argument that isn't a Reservation" do
+      new_reservation = "august 10th"
+      expect {
+        hotel.add_reservation(new_reservation)
+      }.must_raise ArgumentError
+    end
+    
+  end
+  
   describe "#make_reservation" do
     let(:hotel) {
       HotelBooking::Hotel.new(20, 200.00)

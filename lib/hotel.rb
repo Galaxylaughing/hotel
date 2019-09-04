@@ -18,6 +18,14 @@ module HotelBooking
       return rooms_list
     end
     
+    def add_reservation(new_reservation)
+      unless new_reservation.class == Reservation
+        raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{new_reservation}")
+      end
+      
+      reservations << new_reservation
+    end
+    
     def make_reservation(start_date, end_date)
       chosen_room = rooms.sample
       
