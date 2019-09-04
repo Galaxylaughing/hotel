@@ -37,14 +37,25 @@ module HotelBooking
       return new_reservation
     end
     
-    def find_by_date(start_date, end_date)
+    def find_by_date(start_date, end_date = nil)
       overlapping_reservations = []
       
-      range = DateRange.new(start_date, end_date)
-      
-      reservations.each do |single_reservation|
-        if range.overlaps?(single_reservation.dates)
-          overlapping_reservations << single_reservation
+      if end_date == nil
+        date = Date.parse(start_date)
+        
+        reservations.each do |reservation|
+          range = reservation.dates.start_date...reservation.dates.end_date
+          if range.include?(date)
+            overlapping_reservations << reservation
+          end
+        end
+      else
+        range = DateRange.new(start_date, end_date)
+        
+        reservations.each do |reservation|
+          if range.overlaps?(reservation.dates)
+            overlapping_reservations << reservation
+          end
         end
       end
       

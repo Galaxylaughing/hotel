@@ -165,6 +165,14 @@ describe "Hotel" do
       "feb 6 2019"
     }
     
+    it "will accept a single date" do
+      reservation = HotelBooking::Reservation.new(room, start_date, end_date)
+      hotel.reservations << reservation
+      
+      overlapping_reservations = hotel.find_by_date("feb 4 2019")
+      expect(overlapping_reservations).must_include reservation
+    end
+    
     # test cases
     # 		3	4	5	6				= original range
     #     3	4	5	6				=> overlaps completely
