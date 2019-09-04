@@ -71,8 +71,22 @@ module HotelBooking
       return overlapping_reservations
     end
     
-    # def find_available_rooms(start_date, end_date)
-    # end
+    def find_available_rooms(start_date, end_date)
+      dates = DateRange.new(start_date, end_date)
+      available_rooms = []
+      
+      rooms.each do |hotel_room|
+        if hotel_room.is_available?(dates)
+          available_rooms << hotel_room
+        end
+      end
+      
+      if available_rooms.length == 0
+        raise ArgumentError.new("There are no available rooms for these dates")
+      end
+      
+      return available_rooms
+    end
     
   end
 end

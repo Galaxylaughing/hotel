@@ -285,42 +285,68 @@ describe "Hotel" do
     
   end
   
-  # describe "#find_available_rooms" do
-  #   let(:hotel) {
-  #     HotelBooking::Hotel.new(20, 200.00)
-  #   }
-  
-  #   #   * inputs: start_date, end_date
-  #   #   - for a given date range, what rooms are available?
-  #   # look through Hotel@rooms,
-  #   # ask each room, are you available during this DateRange?
-  #   # this would trigger room to check its reservations, and ask if they overlap with the DateRange
-  #   # first room that is available is put into an array of available rooms
-  #   # this list is what is returned
-  
-  #   it "returns a collection of available rooms" do
-  #   end
-  
-  #   it "raise an exception if no rooms are available" do
-  #     hotel.room_total.times do |room_num|
-  
-  #       new_reservation = Reservation.new(room_num, "feb 1 2019", "feb 5 2019")
-  #       self.add_reservation(new_reservation)
-  
-  #     end
-  
-  #   end
-  
-  #   it "returns all rooms if no reservations have been made" do
-  #     expect(hotel.find_available_rooms.length).must_equal 20
-  #   end
-  
-  #   it "returns all but one room if one room has been reserved" do
-  #   end
-  
-  #   it "returns all but two rooms if two rooms have been reserved" do
-  #   end
-  
-  # end
+  describe "#find_available_rooms" do
+    let(:hotel) {
+      HotelBooking::Hotel.new(20, 200.00)
+    }
+    
+    it "returns a collection of available rooms" do
+      available_rooms = hotel.find_available_rooms("jan 1 2019", "jan 5 2019")
+      expect(available_rooms).must_be_instance_of Array
+    end
+    
+    it "returns all rooms if no reservations have been made" do
+      available_rooms = hotel.find_available_rooms("aug 1 2019", "aug 5 2019")
+      expect(available_rooms.length).must_equal 20
+    end
+    
+    it "raise an exception if no rooms are available" do
+      hotel.room_total.times do |room_num|
+        room = hotel.find_by_room_number(room_num + 1)
+        new_reservation = HotelBooking::Reservation.new(room, "feb 1 2019", "feb 5 2019")
+        hotel.add_reservation(new_reservation)
+        room.add_reservation(new_reservation)
+      end
+      
+      expect {
+        hotel.find_available_rooms("feb 1 2019", "feb 5 2019")
+      }.must_raise ArgumentError
+    end
+    
+    it "returns all but one room if one room has been reserved" do
+      room = hotel.find_by_room_number(2)
+      new_reservation = HotelBooking::Reservation.new(room, "march 1 2019", "march 5 2019")
+      hotel.add_reservation(new_reservation)
+      room.add_reservation(new_reservation)
+      
+      available_rooms = hotel.find_available_rooms("march 1 2019", "march 5 2019")
+      
+      expect(available_rooms.length).must_equal 19
+      available_rooms.each do |room|
+        expect(room.number).wont_equal 2
+      end
+    end
+    
+    it "returns all but two rooms if two rooms have been reserved" do
+      room = hotel.find_by_room_number(2)
+      new_reservation = HotelBooking::Reservation.new(room, "march 1 2019", "march 5 2019")
+      hotel.add_reservation(new_reservation)
+      room.add_reservation(new_reservation)
+      
+      other_room = hotel.find_by_room_number(12)
+      second_reservation = HotelBooking::Reservation.new(other_room, "march 1 2019", "march 5 2019")
+      hotel.add_reservation(second_reservation)
+      other_room.add_reservation(second_reservation)
+      
+      available_rooms = hotel.find_available_rooms("march 1 2019", "march 5 2019")
+      
+      expect(available_rooms.length).must_equal 18
+      available_rooms.each do |room|
+        expect(room.number).wont_equal 2
+        expect(room.number).wont_equal 12
+      end
+    end
+    
+  end
   
 end
