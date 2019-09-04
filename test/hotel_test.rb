@@ -141,13 +141,20 @@ describe "Hotel" do
     let(:hotel) {
       HotelBooking::Hotel.new(20, 200.00)
     }
+    let(:start_date) {
+      "march 1 2019"
+    }
+    let(:end_date) {
+      "march 4 2019"
+    }
     let(:new_reservation) {
-      hotel.make_reservation("march 1 2019", "march 4 2019")
+      hotel.make_reservation(start_date, end_date)
     }
     
+    # tests regarding inputs
     it "takes only two inputs, a start date and an end date" do
       expect {
-        hotel.make_reservation(3, "march 1 2019", "march 4 2019")
+        hotel.make_reservation(3, start_date, end_date)
       }.must_raise ArgumentError
     end
     
@@ -157,6 +164,45 @@ describe "Hotel" do
       }.must_raise ArgumentError
     end
     
+    # tests regarding finding an available room
+    it "finds room one if room one is not reserved" do
+      expect(new_reservation.room.number).must_equal 1
+    end
+    
+    it "finds room two if room two is not reserved but room one is" do
+      room = hotel.find_by_room_number(1)
+      reservation = HotelBooking::Reservation.new(room, start_date, end_date)
+      hotel.add_reservation(reservation)
+      room.add_reservation(reservation)
+      
+      expect(new_reservation.room.number).must_equal 2
+    end
+    
+    it "finds room twenty if all other rooms are reserved but it is not" do
+      hotel.rooms.each do |hotel_room|
+        if hotel_room.number != 20
+          reservation = HotelBooking::Reservation.new(hotel_room, start_date, end_date)
+          hotel.add_reservation(reservation)
+          hotel_room.add_reservation(reservation)
+        end
+      end
+      
+      expect(new_reservation.room.number).must_equal 20
+    end
+    
+    it "raises an exception if all rooms are reserved" do
+      hotel.rooms.each do |hotel_room|
+        reservation = HotelBooking::Reservation.new(hotel_room, start_date, end_date)
+        hotel.add_reservation(reservation)
+        hotel_room.add_reservation(reservation)
+      end
+      
+      expect {
+        hotel.make_reservation(start_date, end_date)
+      }.must_raise ArgumentError
+    end
+    
+    # tests regarging creation of a Reservation
     it "instantiates a Reservation instance" do
       expect(new_reservation).must_be_instance_of HotelBooking::Reservation
     end
