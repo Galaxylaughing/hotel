@@ -18,6 +18,15 @@ module HotelBooking
       return rooms_list
     end
     
+    def find_by_room_number(room_number)
+      rooms.each do |hotel_room|
+        if hotel_room.number == room_number
+          return hotel_room
+        end
+      end
+      raise ArgumentError.new("No room found with the number #{room_number}")
+    end
+    
     def add_reservation(new_reservation)
       unless new_reservation.class == Reservation
         raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{new_reservation}")
@@ -61,6 +70,9 @@ module HotelBooking
       
       return overlapping_reservations
     end
+    
+    # def find_available_rooms(start_date, end_date)
+    # end
     
   end
 end

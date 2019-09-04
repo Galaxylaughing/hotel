@@ -77,6 +77,33 @@ describe "Hotel" do
     
   end
   
+  describe "#find_by_room_number" do
+    let(:hotel) {
+      HotelBooking::Hotel.new(20, 200.00)
+    }
+    
+    it "returns a Room instance" do
+      room = hotel.find_by_room_number(10)
+      expect(room).must_be_instance_of HotelBooking::Room
+    end
+    
+    it "can return the first Room" do
+      room = hotel.find_by_room_number(1)
+      expect(room.number).must_equal 1
+    end
+    
+    it "can return the last Room" do
+      room = hotel.find_by_room_number(20)
+      expect(room.number).must_equal 20
+    end
+    
+    it "raises an error for invalid room numbers" do
+      expect {
+        hotel.find_by_room_number(21)
+      }.must_raise ArgumentError
+    end
+  end
+  
   describe "#add_reservation" do
     let(:hotel) {
       HotelBooking::Hotel.new(20, 200.00)
@@ -257,5 +284,43 @@ describe "Hotel" do
     end
     
   end
+  
+  # describe "#find_available_rooms" do
+  #   let(:hotel) {
+  #     HotelBooking::Hotel.new(20, 200.00)
+  #   }
+  
+  #   #   * inputs: start_date, end_date
+  #   #   - for a given date range, what rooms are available?
+  #   # look through Hotel@rooms,
+  #   # ask each room, are you available during this DateRange?
+  #   # this would trigger room to check its reservations, and ask if they overlap with the DateRange
+  #   # first room that is available is put into an array of available rooms
+  #   # this list is what is returned
+  
+  #   it "returns a collection of available rooms" do
+  #   end
+  
+  #   it "raise an exception if no rooms are available" do
+  #     hotel.room_total.times do |room_num|
+  
+  #       new_reservation = Reservation.new(room_num, "feb 1 2019", "feb 5 2019")
+  #       self.add_reservation(new_reservation)
+  
+  #     end
+  
+  #   end
+  
+  #   it "returns all rooms if no reservations have been made" do
+  #     expect(hotel.find_available_rooms.length).must_equal 20
+  #   end
+  
+  #   it "returns all but one room if one room has been reserved" do
+  #   end
+  
+  #   it "returns all but two rooms if two rooms have been reserved" do
+  #   end
+  
+  # end
   
 end
