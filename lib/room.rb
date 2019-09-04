@@ -12,6 +12,18 @@ module HotelBooking
       @reservations = []
     end
     
+    def add_reservation(new_reservation)
+      unless new_reservation.class == Reservation
+        raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{new_reservation}")
+      end
+      
+      unless new_reservation.room == number
+        raise ArgumentError.new("Invalid reservation; expected a reservation for room #{number} but received a reservation for room #{new_reservation.room}")
+      end
+      
+      reservations << new_reservation
+    end
+    
     def is_available?(date_range)
       available = true
       reservations.each do |single_reservation|

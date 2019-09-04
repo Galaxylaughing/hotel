@@ -36,13 +36,32 @@ describe "Room" do
     
   end
   
-  # describe "#add_reservation" do
-  #   let(:room) {
-  #     HotelBooking::Room.new(1)
-  #   }
-  
-  
-  # end
+  describe "#add_reservation" do
+    let(:room) {
+      HotelBooking::Room.new(1)
+    }
+    
+    it "can add a new reservation" do
+      new_reservation = HotelBooking::Reservation.new(1, "august 1", "august 5")
+      room.add_reservation(new_reservation)
+      expect(room.reservations.length).must_equal 1
+    end
+    
+    it "raises an exception if handed a Reservation with a non-matching room number" do
+      new_reservation = HotelBooking::Reservation.new(3, "august 1", "august 5")
+      expect {
+        room.add_reservation(new_reservation)
+      }.must_raise ArgumentError
+    end
+    
+    it "raises an exception for an argument that isn't a Reservation Object" do
+      new_reservation = "august 10th"
+      expect {
+        room.add_reservation(new_reservation)
+      }.must_raise ArgumentError
+    end
+    
+  end
   
   describe "#is_available?" do
     let(:room) {
