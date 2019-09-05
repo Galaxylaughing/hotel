@@ -8,4 +8,5 @@ module HotelBooking; end
 require_relative "lib/daterange"
 require_relative "lib/reservation"
 require_relative "lib/room"
+require_relative "lib/block"
 require_relative "lib/hotel"
