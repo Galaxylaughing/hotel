@@ -7,7 +7,7 @@ describe "Reservation" do
       HotelBooking::Room.new(1)
     }
     let(:reservation) {
-      HotelBooking::Reservation.new(room_one, "august 1 2019", "august 3 2019", 200.00)
+      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 3 2019", cost_per_night: 200.00)
     }
     
     it "creates a Reservation Object" do
@@ -16,7 +16,7 @@ describe "Reservation" do
     
     it "raises an exception if handed a non-Room" do
       expect {
-        HotelBooking::Reservation.new(1, "august 1 2019", "august 3 2019", 200.00)
+        HotelBooking::Reservation.new(room: 1, start_date: "august 1 2019", end_date: "august 3 2019", cost_per_night: 200.00)
       }.must_raise ArgumentError
     end
     
@@ -48,10 +48,10 @@ describe "Reservation" do
       HotelBooking::Room.new(1)
     }
     let(:reservation_one) {
-      HotelBooking::Reservation.new(room_one, "august 1 2019", "august 3 2019", 200.00)
+      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 3 2019", cost_per_night: 200.00)
     }
     let(:reservation_two) {
-      HotelBooking::Reservation.new(room_one, "august 1 2019", "august 30 2019", 200.00)
+      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 30 2019", cost_per_night: 200.00)
     }
     
     it "returns a float" do

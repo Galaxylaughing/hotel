@@ -33,7 +33,7 @@ describe "Hotel" do
     end
     
     it "can add a Reservation to its list" do
-      new_reservation = HotelBooking::Reservation.new(room, "september 1 2019", "september 5 2019")
+      new_reservation = HotelBooking::Reservation.new(room: room, start_date: "september 1 2019", end_date: "september 5 2019")
       hotel.reservations << new_reservation
       expect(hotel.reservations.length).must_equal 1
     end
@@ -114,17 +114,21 @@ describe "Hotel" do
     
     it "can add one new Reservation" do
       expect(hotel.reservations.length).must_equal 0
-      new_reservation = HotelBooking::Reservation.new(room, "january 1, 2019", "january 3, 2019")
+      new_reservation = HotelBooking::Reservation.new(room: room, start_date: "january 1, 2019", end_date: "january 3, 2019")
+      
       hotel.add_reservation(new_reservation)
+      
       expect(hotel.reservations.length).must_equal 1      
     end
     
     it "can add multiple new Reservations" do
       expect(hotel.reservations.length).must_equal 0
-      first_reservation = HotelBooking::Reservation.new(room, "january 1, 2019", "january 3, 2019")
-      second_reservation = HotelBooking::Reservation.new(room, "january 8, 2019", "january 12, 2019")
+      first_reservation = HotelBooking::Reservation.new(room: room, start_date: "january 1, 2019", end_date: "january 3, 2019")
+      second_reservation = HotelBooking::Reservation.new(room: room, start_date: "january 8, 2019", end_date: "january 12, 2019")
+      
       hotel.add_reservation(first_reservation)
       hotel.add_reservation(second_reservation)
+      
       expect(hotel.reservations.length).must_equal 2
     end
     
@@ -171,7 +175,7 @@ describe "Hotel" do
     
     it "finds room two if room two is not reserved but room one is" do
       room = hotel.find_by_room_number(1)
-      reservation = HotelBooking::Reservation.new(room, start_date, end_date)
+      reservation = HotelBooking::Reservation.new(room: room, start_date: start_date, end_date: end_date)
       hotel.add_reservation(reservation)
       room.add_reservation(reservation)
       
@@ -181,7 +185,7 @@ describe "Hotel" do
     it "finds room twenty if all other rooms are reserved but it is not" do
       hotel.rooms.each do |hotel_room|
         if hotel_room.number != 20
-          reservation = HotelBooking::Reservation.new(hotel_room, start_date, end_date)
+          reservation = HotelBooking::Reservation.new(room: hotel_room, start_date: start_date, end_date: end_date)
           hotel.add_reservation(reservation)
           hotel_room.add_reservation(reservation)
         end
@@ -192,7 +196,7 @@ describe "Hotel" do
     
     it "raises an exception if all rooms are reserved" do
       hotel.rooms.each do |hotel_room|
-        reservation = HotelBooking::Reservation.new(hotel_room, start_date, end_date)
+        reservation = HotelBooking::Reservation.new(room: hotel_room, start_date: start_date, end_date: end_date)
         hotel.add_reservation(reservation)
         hotel_room.add_reservation(reservation)
       end
@@ -239,7 +243,7 @@ describe "Hotel" do
     }
     
     it "will accept a single date" do
-      reservation = HotelBooking::Reservation.new(room, start_date, end_date)
+      reservation = HotelBooking::Reservation.new(room: room, start_date: start_date, end_date: end_date)
       hotel.reservations << reservation
       
       overlapping_reservations = hotel.find_by_date("feb 4 2019")
@@ -256,7 +260,7 @@ describe "Hotel" do
     #		        6	7	8		=> checkin day overlaps checkout day
     
     it "should return: reservation that overlaps completely" do
-      total_overlap = HotelBooking::Reservation.new(room, start_date, end_date)
+      total_overlap = HotelBooking::Reservation.new(room: room, start_date: start_date, end_date: end_date)
       hotel.reservations << total_overlap
       
       overlapping_reservations = hotel.find_by_date(start_date, end_date)
@@ -264,7 +268,7 @@ describe "Hotel" do
     end
     
     it "should return: reservation that overlaps the input's middle" do
-      middle_overlap = HotelBooking::Reservation.new(room, "feb 4 2019", "feb 5 2019")
+      middle_overlap = HotelBooking::Reservation.new(room: room, start_date: "feb 4 2019", end_date: "feb 5 2019")
       hotel.reservations << middle_overlap
       
       overlapping_reservations = hotel.find_by_date(start_date, end_date)
@@ -272,7 +276,7 @@ describe "Hotel" do
     end
     
     it "should return: reservation that overlaps the input's first two days" do
-      beginning_overlap = HotelBooking::Reservation.new(room, "feb 2 2019", "feb 4 2019")
+      beginning_overlap = HotelBooking::Reservation.new(room: room, start_date: "feb 2 2019", end_date: "feb 4 2019")
       hotel.reservations << beginning_overlap
       
       overlapping_reservations = hotel.find_by_date(start_date, end_date)
@@ -280,7 +284,7 @@ describe "Hotel" do
     end
     
     it "should return: reservation that overlaps the input's last two days" do
-      ending_overlap = HotelBooking::Reservation.new(room, "feb 5 2019", "feb 7 2019")
+      ending_overlap = HotelBooking::Reservation.new(room: room, start_date: "feb 5 2019", end_date: "feb 7 2019")
       hotel.reservations << ending_overlap
       
       overlapping_reservations = hotel.find_by_date(start_date, end_date)
@@ -288,8 +292,8 @@ describe "Hotel" do
     end
     
     it "returns a collection of reservations" do
-      beginning_overlap = HotelBooking::Reservation.new(room, "feb 2 2019", "feb 4 2019")
-      ending_overlap = HotelBooking::Reservation.new(room, "feb 5 2019", "feb 7 2019")
+      beginning_overlap = HotelBooking::Reservation.new(room: room, start_date: "feb 2 2019", end_date: "feb 4 2019")
+      ending_overlap = HotelBooking::Reservation.new(room: room, start_date: "feb 5 2019", end_date: "feb 7 2019")
       
       hotel.reservations << beginning_overlap
       hotel.reservations << ending_overlap
@@ -314,7 +318,7 @@ describe "Hotel" do
     # aka, how many nights have been reserved during this range?
     
     it "should not return: reservation that ends on the input's check-in day" do
-      overlaps_checkin = HotelBooking::Reservation.new(room, "feb 1 2019", "feb 3 2019")
+      overlaps_checkin = HotelBooking::Reservation.new(room: room, start_date: "feb 1 2019", end_date: "feb 3 2019")
       hotel.reservations << overlaps_checkin
       
       overlapping_reservations = hotel.find_by_date(start_date, end_date)
@@ -322,7 +326,7 @@ describe "Hotel" do
     end
     
     it "should not return: reservation that begins on the input's check-out day" do
-      overlaps_checkout = HotelBooking::Reservation.new(room, "feb 6 2019", "feb 8 2019")
+      overlaps_checkout = HotelBooking::Reservation.new(room: room, start_date: "feb 6 2019", end_date: "feb 8 2019")
       hotel.reservations << overlaps_checkout
       
       overlapping_reservations = hotel.find_by_date(start_date, end_date)
@@ -349,7 +353,7 @@ describe "Hotel" do
     it "raise an exception if no rooms are available" do
       hotel.room_total.times do |room_num|
         room = hotel.find_by_room_number(room_num + 1)
-        new_reservation = HotelBooking::Reservation.new(room, "feb 1 2019", "feb 5 2019")
+        new_reservation = HotelBooking::Reservation.new(room: room, start_date: "feb 1 2019", end_date: "feb 5 2019")
         hotel.add_reservation(new_reservation)
         room.add_reservation(new_reservation)
       end
@@ -361,7 +365,7 @@ describe "Hotel" do
     
     it "returns all but one room if one room has been reserved" do
       room = hotel.find_by_room_number(2)
-      new_reservation = HotelBooking::Reservation.new(room, "march 1 2019", "march 5 2019")
+      new_reservation = HotelBooking::Reservation.new(room: room, start_date: "march 1 2019", end_date: "march 5 2019")
       hotel.add_reservation(new_reservation)
       room.add_reservation(new_reservation)
       
@@ -375,12 +379,12 @@ describe "Hotel" do
     
     it "returns all but two rooms if two rooms have been reserved" do
       room = hotel.find_by_room_number(2)
-      new_reservation = HotelBooking::Reservation.new(room, "march 1 2019", "march 5 2019")
+      new_reservation = HotelBooking::Reservation.new(room: room, start_date: "march 1 2019", end_date: "march 5 2019")
       hotel.add_reservation(new_reservation)
       room.add_reservation(new_reservation)
       
       other_room = hotel.find_by_room_number(12)
-      second_reservation = HotelBooking::Reservation.new(other_room, "march 1 2019", "march 5 2019")
+      second_reservation = HotelBooking::Reservation.new(room: other_room, start_date: "march 1 2019", end_date: "march 5 2019")
       hotel.add_reservation(second_reservation)
       other_room.add_reservation(second_reservation)
       

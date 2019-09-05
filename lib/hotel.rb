@@ -39,7 +39,7 @@ module HotelBooking
       available_rooms = self.find_available_rooms(start_date, end_date)
       chosen_room = available_rooms.first
       
-      new_reservation = Reservation.new(chosen_room, start_date, end_date)
+      new_reservation = Reservation.new(room: chosen_room, start_date: start_date, end_date: end_date)
       
       chosen_room.add_reservation(new_reservation)
       self.add_reservation(new_reservation)

@@ -3,7 +3,7 @@ module HotelBooking
     
     attr_reader :room, :dates, :cost_per_night
     
-    def initialize(room, start_date, end_date, cost_per_night = 200.00)
+    def initialize(room:, start_date:, end_date:, cost_per_night: 200.00)
       unless room.class == Room
         raise ArgumentError.new("Excepted Room instance, given #{room}")
       end
