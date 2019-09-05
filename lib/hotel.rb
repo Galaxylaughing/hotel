@@ -22,6 +22,18 @@ module HotelBooking
       return Room.new(room_number)
     end
     
+    def self.make_reservation(room:, start_date:, end_date:)
+      return Reservation.new(room: room, start_date: start_date, end_date: end_date)
+    end
+    
+    def self.make_daterange(start_date:, end_date:)
+      return DateRange.new(start_date: start_date, end_date: end_date)
+    end
+    
+    def self.make_date(date)
+      return Date.parse(date)
+    end
+    
     def find_by_room_number(room_number)
       rooms.each do |hotel_room|
         if hotel_room.number == room_number
@@ -43,7 +55,7 @@ module HotelBooking
       available_rooms = self.find_available_rooms(start_date: start_date, end_date: end_date)
       chosen_room = available_rooms.first
       
-      new_reservation = Reservation.new(room: chosen_room, start_date: start_date, end_date: end_date)
+      new_reservation = Hotel.make_reservation(room: chosen_room, start_date: start_date, end_date: end_date)
       
       chosen_room.add_reservation(new_reservation)
       self.add_reservation(new_reservation)
@@ -55,7 +67,7 @@ module HotelBooking
       overlapping_reservations = []
       
       if end_date == nil
-        date = Date.parse(start_date)
+        date = Hotel.make_date(start_date)
         
         reservations.each do |reservation|
           range = reservation.dates.start_date...reservation.dates.end_date
@@ -64,7 +76,7 @@ module HotelBooking
           end
         end
       else
-        range = DateRange.new(start_date: start_date, end_date: end_date)
+        range = Hotel.make_daterange(start_date: start_date, end_date: end_date)
         
         reservations.each do |reservation|
           if range.overlaps?(reservation.dates)
@@ -77,7 +89,7 @@ module HotelBooking
     end
     
     def find_available_rooms(start_date:, end_date:)
-      dates = DateRange.new(start_date: start_date, end_date: end_date)
+      dates = Hotel.make_daterange(start_date: start_date, end_date: end_date)
       available_rooms = []
       
       rooms.each do |hotel_room|

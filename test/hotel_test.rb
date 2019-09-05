@@ -91,6 +91,72 @@ describe "Hotel" do
     end
   end
   
+  describe ".make_reservation" do
+    let(:room_three) {
+      HotelBooking::Hotel.make_room(3)
+    }
+    let(:result) {
+      HotelBooking::Hotel.make_reservation(room: room_three, start_date: "january 1 2019", end_date: "january 5 2019")
+    }
+    
+    it "creates a Reservation instance" do
+      expect(result).must_be_instance_of HotelBooking::Reservation
+    end
+    
+    it "has a room" do
+      expect(result.room).must_be_instance_of HotelBooking::Room
+    end
+    
+    it "can read its room number" do
+      expect(result.room.number).must_equal 3
+    end
+    
+    it "has a daterange" do
+      expect(result.dates).must_be_instance_of HotelBooking::DateRange
+    end
+    
+    it "can read its start date" do
+      expect(result.dates.start_date.to_s).must_equal "2019-01-01"
+    end
+    
+    it "can read its end date" do
+      expect(result.dates.end_date.to_s).must_equal "2019-01-05"
+    end
+    
+  end
+  
+  describe ".make_daterange" do
+    let(:result) {
+      HotelBooking::Hotel.make_daterange(start_date: "january 2, 2019", end_date: "january 20, 2019")
+    }
+    
+    it "returns a DateRange instance" do
+      expect(result).must_be_instance_of HotelBooking::DateRange
+    end
+    
+    it "can read its start date" do
+      expect(result.start_date.to_s).must_equal "2019-01-02"
+    end
+    
+    it "can read its end date" do
+      expect(result.end_date.to_s).must_equal "2019-01-20"
+    end
+  end
+  
+  describe ".make_date" do
+    let(:result) {
+      HotelBooking::Hotel.make_date("january 2, 2019")
+    }
+    
+    it "returns a Date instance" do
+      expect(result).must_be_instance_of Date
+    end
+    
+    it "can read itself" do
+      expect(result.to_s).must_equal "2019-01-02"
+    end
+  end
+  
   describe "#find_by_room_number" do
     let(:hotel) {
       HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
