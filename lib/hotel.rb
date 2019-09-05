@@ -13,9 +13,13 @@ module HotelBooking
     def load_rooms(number_of_rooms)
       rooms_list = []
       for room_number in 1..number_of_rooms
-        rooms_list << Room.new(room_number)
+        rooms_list << Hotel.make_room(room_number)
       end
       return rooms_list
+    end
+    
+    def self.make_room(room_number)
+      return Room.new(room_number)
     end
     
     def find_by_room_number(room_number)

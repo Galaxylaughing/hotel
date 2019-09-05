@@ -77,6 +77,16 @@ describe "Hotel" do
     
   end
   
+  describe ".make_room" do
+    let(:result) {
+      HotelBooking::Hotel.make_room(3)
+    }
+    
+    it "returns a Room instance" do
+      expect(result).must_be_instance_of HotelBooking::Room
+    end
+  end
+  
   describe "#find_by_room_number" do
     let(:hotel) {
       HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
