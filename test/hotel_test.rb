@@ -4,7 +4,7 @@ describe "Hotel" do
   
   describe "initialize" do
     let(:hotel) {
-      HotelBooking::Hotel.new(20, 200.00)
+      HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
     }
     let(:room) {
       HotelBooking::Room.new(2)
@@ -57,7 +57,7 @@ describe "Hotel" do
   
   describe ".load_rooms" do
     let(:hotel) {
-      HotelBooking::Hotel.new(20, 200.00)
+      HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
     }
     
     it "creates an collection of Rooms" do
@@ -79,7 +79,7 @@ describe "Hotel" do
   
   describe "#find_by_room_number" do
     let(:hotel) {
-      HotelBooking::Hotel.new(20, 200.00)
+      HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
     }
     
     it "returns a Room instance" do
@@ -106,7 +106,7 @@ describe "Hotel" do
   
   describe "#add_reservation" do
     let(:hotel) {
-      HotelBooking::Hotel.new(20, 200.00)
+      HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
     }
     let(:room) {
       HotelBooking::Room.new(1)
@@ -143,7 +143,7 @@ describe "Hotel" do
   
   describe "#make_reservation" do
     let(:hotel) {
-      HotelBooking::Hotel.new(20, 200.00)
+      HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
     }
     let(:start_date) {
       "march 1 2019"
@@ -230,7 +230,7 @@ describe "Hotel" do
   
   describe "#find_by_date" do
     let(:hotel) {
-      HotelBooking::Hotel.new(20, 200.00)
+      HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
     }
     let(:room) {
       HotelBooking::Room.new(4)
@@ -337,7 +337,7 @@ describe "Hotel" do
   
   describe "#find_available_rooms" do
     let(:hotel) {
-      HotelBooking::Hotel.new(20, 200.00)
+      HotelBooking::Hotel.new(number_of_rooms: 20, cost_per_night: 200.00)
     }
     
     it "returns a collection of available rooms" do
