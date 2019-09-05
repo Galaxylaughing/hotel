@@ -43,6 +43,32 @@ describe "Reservation" do
     
   end
   
+  
+  describe "#make_dates" do
+    let(:result) {
+      HotelBooking::Reservation.make_dates(start_date: "august 1 2019", end_date: "august 3 2019")
+    }
+    
+    it "returns a DateRange" do
+      expect(result).must_be_instance_of HotelBooking::DateRange
+    end
+    
+    it "can access the start date" do
+      expect(result.start_date.to_s).must_equal "2019-08-01"
+    end
+    
+    it "can access the end date" do
+      expect(result.end_date.to_s).must_equal "2019-08-03"
+    end
+    
+    it "raises an exception is given invalid dates" do
+      expect {
+        HotelBooking::Reservation.make_dates(start_date: "cookie", end_date: "monster")
+      }.must_raise ArgumentError
+    end
+    
+  end
+  
   describe "#total_cost" do
     let(:room_one) {
       HotelBooking::Room.new(1)
