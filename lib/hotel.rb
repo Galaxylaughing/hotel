@@ -36,7 +36,7 @@ module HotelBooking
     end
     
     def make_reservation(start_date, end_date)
-      available_rooms = self.find_available_rooms(start_date, end_date)
+      available_rooms = self.find_available_rooms(start_date: start_date, end_date: end_date)
       chosen_room = available_rooms.first
       
       new_reservation = Reservation.new(room: chosen_room, start_date: start_date, end_date: end_date)
@@ -72,7 +72,7 @@ module HotelBooking
       return overlapping_reservations
     end
     
-    def find_available_rooms(start_date, end_date)
+    def find_available_rooms(start_date:, end_date:)
       dates = DateRange.new(start_date: start_date, end_date: end_date)
       available_rooms = []
       

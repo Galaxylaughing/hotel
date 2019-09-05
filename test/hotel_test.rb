@@ -341,12 +341,12 @@ describe "Hotel" do
     }
     
     it "returns a collection of available rooms" do
-      available_rooms = hotel.find_available_rooms("jan 1 2019", "jan 5 2019")
+      available_rooms = hotel.find_available_rooms(start_date: "jan 1 2019", end_date: "jan 5 2019")
       expect(available_rooms).must_be_instance_of Array
     end
     
     it "returns all rooms if no reservations have been made" do
-      available_rooms = hotel.find_available_rooms("aug 1 2019", "aug 5 2019")
+      available_rooms = hotel.find_available_rooms(start_date: "aug 1 2019", end_date: "aug 5 2019")
       expect(available_rooms.length).must_equal 20
     end
     
@@ -359,7 +359,7 @@ describe "Hotel" do
       end
       
       expect {
-        hotel.find_available_rooms("feb 1 2019", "feb 5 2019")
+        hotel.find_available_rooms(start_date: "feb 1 2019", end_date: "feb 5 2019")
       }.must_raise ArgumentError
     end
     
@@ -369,7 +369,7 @@ describe "Hotel" do
       hotel.add_reservation(new_reservation)
       room.add_reservation(new_reservation)
       
-      available_rooms = hotel.find_available_rooms("march 1 2019", "march 5 2019")
+      available_rooms = hotel.find_available_rooms(start_date: "march 1 2019", end_date: "march 5 2019")
       
       expect(available_rooms.length).must_equal 19
       available_rooms.each do |available_room|
@@ -388,7 +388,7 @@ describe "Hotel" do
       hotel.add_reservation(second_reservation)
       other_room.add_reservation(second_reservation)
       
-      available_rooms = hotel.find_available_rooms("march 1 2019", "march 5 2019")
+      available_rooms = hotel.find_available_rooms(start_date: "march 1 2019", end_date: "march 5 2019")
       
       expect(available_rooms.length).must_equal 18
       available_rooms.each do |available_room|
