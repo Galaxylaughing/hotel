@@ -4,8 +4,8 @@ module HotelBooking
     attr_reader :start_date, :end_date, :nights
     
     def initialize(start_date:, end_date:)
-      date_one = Date.parse(start_date)
-      date_two = Date.parse(end_date)
+      date_one = DateRange.make_date(start_date)
+      date_two = DateRange.make_date(end_date)
       
       if DateRange.is_valid?(start_date: date_one, end_date: date_two)
         @start_date = date_one
@@ -14,6 +14,10 @@ module HotelBooking
       else
         raise ArgumentError.new("Invalid date range; got #{start_date}, #{end_date}")
       end
+    end
+    
+    def self.make_date(date)
+      return Date.parse(date)
     end
     
     def self.is_valid?(start_date:, end_date:) 
