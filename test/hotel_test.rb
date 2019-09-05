@@ -85,6 +85,10 @@ describe "Hotel" do
     it "returns a Room instance" do
       expect(result).must_be_instance_of HotelBooking::Room
     end
+    
+    it "can read its room number" do
+      expect(result.number).must_equal 3
+    end
   end
   
   describe "#find_by_room_number" do
