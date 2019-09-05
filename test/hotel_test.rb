@@ -4,7 +4,7 @@ describe "Hotel" do
   
   describe "initialize" do
     let(:hotel) {
-      HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00)
+      HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
     }
     let(:room) {
       HotelBooking::Room.new(2)
@@ -52,6 +52,17 @@ describe "Hotel" do
     #     hotel.rooms << new_room
     #   }.must_raise ArgumentError
     # end
+    
+    it "has a max number of rooms it will allow a block to take" do
+      expect(hotel.max_rooms_per_block).must_equal 5
+    end
+    
+    it "has a collection of blocks" do
+      expect(hotel.blocks).must_be_instance_of Array
+      hotel.blocks.each do |hotel_block|
+        expect(hotel_block).must_be_instance_of HotelBooking::Block
+      end
+    end
     
   end
   
@@ -184,6 +195,27 @@ describe "Hotel" do
     end
   end
   
+  describe "#find_block_by_id" do
+    let(:hotel) {
+      HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00)
+    }
+    let(:new_block) {
+      HotelBooking::Block.new(id: 5, start_date: "feb 20 2019", end_date: "feb 28 2019", price_per_night: 175.00)
+    }
+    
+    it "returns a Block instance" do
+      hotel.add_block(new_block)
+      found_block = hotel.find_block_by_id(block_id: 5)
+      expect(found_block).must_be_instance_of HotelBooking::Block
+    end
+    
+    it "raises an error for invalid block IDs" do
+      expect {
+        hotel.find_block_by_id("cookie")
+      }.must_raise ArgumentError
+    end
+  end
+  
   describe "#add_reservation" do
     let(:hotel) {
       HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00)
@@ -217,6 +249,22 @@ describe "Hotel" do
       expect {
         hotel.add_reservation(new_reservation)
       }.must_raise ArgumentError
+    end
+    
+  end
+  
+  describe "#add_block" do
+    let(:hotel) {
+      HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00)
+    }
+    
+    it "can add a new block" do
+      new_block = HotelBooking::Block.new(id: 1, start_date: "feb 20 2019", end_date: "feb 28 2019", price_per_night: 175.00)
+      
+      hotel.add_block(new_block)
+      
+      expect(hotel.blocks.length).must_equal 1
+      expect(hotel.blocks).must_include new_block
     end
     
   end
@@ -306,6 +354,26 @@ describe "Hotel" do
     it "adds a Reservation to the Hotel's list" do
       expect(hotel.reservations).must_include new_reservation
     end
+  end
+  
+  describe "#add_rooms_to_block" do
+    let(:hotel) {
+      HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
+    }
+    let(:new_block) {
+      HotelBooking::Block.new(id: 1, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
+    }
+    
+    it "can populate a Block's list of rooms" do
+      hotel.add_block(new_block)
+      hotel.add_rooms_to_block(block_id: 1)
+      
+      expect(new_block.rooms.length).must_equal 5
+      new_block.rooms.each do |block_room|
+        expect(block_room).must_be_instance_of HotelBooking::Room
+      end
+    end
+    
   end
   
   describe "#find_by_date" do

@@ -15,5 +15,9 @@ module HotelBooking
       return DateRange.new(start_date: start_date, end_date: end_date)
     end
     
+    def add_room(room)
+      self.rooms << room
+    end
+    
   end
 end

@@ -66,6 +66,15 @@ describe "DateRange" do
     it "returns a Date instance" do
       expect(result).must_be_instance_of Date
     end
+    
+    it "does not attempt to convert Dates into Dates" do
+      march_twenty = Date.parse("march 20 2019")
+      
+      #it shouldn't throw an exception
+      result = HotelBooking::DateRange.make_date(march_twenty)
+      expect(result).must_be_instance_of Date
+    end
+    
   end
   
   describe ".is_valid?" do

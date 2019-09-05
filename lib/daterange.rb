@@ -17,7 +17,10 @@ module HotelBooking
     end
     
     def self.make_date(date)
-      return Date.parse(date)
+      unless date.class == Date
+        date = Date.parse(date)
+      end
+      return date
     end
     
     def self.is_valid?(start_date:, end_date:) 

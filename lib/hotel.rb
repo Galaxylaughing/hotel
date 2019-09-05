@@ -1,13 +1,15 @@
 module HotelBooking
   class Hotel
     
-    attr_reader :room_total, :price_per_night, :rooms, :reservations
+    attr_reader :room_total, :price_per_night, :rooms, :reservations, :max_rooms_per_block, :blocks
     
-    def initialize(number_of_rooms:, price_per_night:)
+    def initialize(number_of_rooms:, price_per_night:, max_rooms_per_block: nil)
       @room_total = number_of_rooms
       @price_per_night = price_per_night
       @rooms = load_rooms(number_of_rooms)
       @reservations = []
+      @blocks = []
+      @max_rooms_per_block = max_rooms_per_block
     end
     
     def load_rooms(number_of_rooms)
@@ -43,12 +45,29 @@ module HotelBooking
       raise ArgumentError.new("No room found with the number #{room_number}")
     end
     
+    def find_block_by_id(block_id:)
+      blocks.each do |hotel_block|
+        if hotel_block.id == block_id
+          return hotel_block
+        end
+      end
+      raise ArgumentError.new("No block found with the number #{block_id}")
+    end
+    
     def add_reservation(new_reservation)
       unless new_reservation.class == Reservation
         raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{new_reservation}")
       end
       
       reservations << new_reservation
+    end
+    
+    def add_block(new_block)
+      unless new_block.class == Block
+        raise ArgumentError.new("Invalid b lock; expected Block instance, received #{new_block}")
+      end
+      
+      blocks << new_block
     end
     
     def reserve(start_date:, end_date:)
@@ -61,6 +80,17 @@ module HotelBooking
       self.add_reservation(new_reservation)
       
       return new_reservation
+    end
+    
+    def add_rooms_to_block(block_id:)
+      block = find_block_by_id(block_id: block_id)
+      
+      available_rooms = find_available_rooms(start_date: block.dates.start_date, end_date: block.dates.end_date)
+      
+      until block.rooms.length == max_rooms_per_block
+        block.add_room(available_rooms.pop)
+      end
+      
     end
     
     def find_by_date(start_date, end_date = nil)

@@ -62,6 +62,20 @@ describe "Block" do
   end
   
   describe "#add_room" do
+    let(:block) {
+      HotelBooking::Block.new(id: 1, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
+    }
+    let(:room_ten) {
+      HotelBooking::Room.new(10)
+    }
+    
+    it "adds a room to the block's list of rooms" do
+      block.add_room(room_ten)
+      expect(block.rooms.length).must_equal 1
+      block.rooms.each do |block_room|
+        expect(block_room).must_be_instance_of HotelBooking::Room
+      end
+    end
   end
   
 end
