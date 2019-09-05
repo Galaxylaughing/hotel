@@ -58,6 +58,16 @@ describe "DateRange" do
     end
   end
   
+  describe ".make_date" do
+    let(:result) {
+      HotelBooking::DateRange.make_date("august 1 2019")
+    }
+    
+    it "returns a Date instance" do
+      expect(result).must_be_instance_of Date
+    end
+  end
+  
   describe ".is_valid?" do
     let(:aug_first) {
       Date.parse("august 1 2019")
