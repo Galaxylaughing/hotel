@@ -152,19 +152,19 @@ describe "Hotel" do
       "march 4 2019"
     }
     let(:new_reservation) {
-      hotel.make_reservation(start_date, end_date)
+      hotel.make_reservation(start_date: start_date, end_date: end_date)
     }
     
     # tests regarding inputs
     it "takes only two inputs, a start date and an end date" do
       expect {
-        hotel.make_reservation(3, start_date, end_date)
+        hotel.make_reservation(3, start_date: start_date, end_date: end_date)
       }.must_raise ArgumentError
     end
     
     it "raises an exception for invalid dates" do
       expect {
-        hotel.make_reservation("cookie", "cereal")
+        hotel.make_reservation(start_date: "cookie", end_date: "cereal")
       }.must_raise ArgumentError
     end
     
@@ -202,7 +202,7 @@ describe "Hotel" do
       end
       
       expect {
-        hotel.make_reservation(start_date, end_date)
+        hotel.make_reservation(start_date: start_date, end_date: end_date)
       }.must_raise ArgumentError
     end
     
