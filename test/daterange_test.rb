@@ -115,68 +115,80 @@ describe "DateRange" do
   
   describe "#overlaps?" do
     
-    it "returns false for date ranges that do not overlap" do
-      range = HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
-      other_range = HotelBooking::DateRange.new("august 5 2019", "august 9 2019")
+    # does overlap test cases
+    it "overlaps if the date ranges are the same" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 5 2019", "august 10 2019")
+      
+      result = range.overlaps?(other_range)
+      expect(result).must_equal true
+    end
+    
+    it "overlaps if second range is contained within the first" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 7 2019", "august 10 2019")
+      
+      result = range.overlaps?(other_range)
+      expect(result).must_equal true
+    end
+    
+    it "overlaps if the second range begins before and ends during" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 1 2019", "august 6 2019")
+      
+      result = range.overlaps?(other_range)
+      expect(result).must_equal true
+    end
+    
+    it "overlaps if the second range begins during and ends after" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 11 2019", "august 15 2019")
+      
+      result = range.overlaps?(other_range)
+      expect(result).must_equal true
+    end
+    
+    it "overlaps if the second range begins before and ends after" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 1 2019", "august 15 2019")
+      
+      result = range.overlaps?(other_range)
+      expect(result).must_equal true
+    end
+    
+    # doesn't overlap test cases
+    it "does NOT overlap if the second range begins after the first ends" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 13 2019", "august 15 2019")
       
       result = range.overlaps?(other_range)
       expect(result).must_equal false
     end
     
-    it "returns false if one range starts on the same day the other ends" do
-      range = HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
-      other_range = HotelBooking::DateRange.new("august 3 2019", "august 9 2019")
+    it "does NOT overlap if the second ends before the first begins" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 1 2019", "august 4 2019")
       
       result = range.overlaps?(other_range)
       expect(result).must_equal false
     end
     
-    it "returns true for date ranges that overlap on two days" do
-      range = HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
-      other_range = HotelBooking::DateRange.new("august 2 2019", "august 4 2019")
+    # (if the 2nd ends when the 1st begins, the 1st begins on a new night from the 2nd)
+    it "does NOT overlap if the second range ends when the first begins" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 1 2019", "august 5 2019")
       
       result = range.overlaps?(other_range)
-      expect(result).must_equal true
+      expect(result).must_equal false
     end
     
-    it "returns true for date ranges that overlap on every day" do
-      range = HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
-      other_range = HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
+    # (if the 2nd begins when the 1st ends, the 2nd begins on a new night from the 1st)
+    it "does NOT overlap if the second range begins when the first ends" do
+      range = HotelBooking::DateRange.new("august 5 2019", "august 12 2019")
+      other_range = HotelBooking::DateRange.new("august 12 2019", "august 14 2019")
       
       result = range.overlaps?(other_range)
-      expect(result).must_equal true
-    end
-    
-    it "returns true for date ranges that overlap entirely except the first begins a day earlier" do
-      range = HotelBooking::DateRange.new("august 1 2019", "august 4 2019")
-      other_range = HotelBooking::DateRange.new("august 2 2019", "august 4 2019")
-      
-      result = range.overlaps?(other_range)
-      expect(result).must_equal true
-    end
-    
-    it "returns true for date ranges that overlap entirely except the second begins a day earlier" do
-      range = HotelBooking::DateRange.new("august 2 2019", "august 4 2019")
-      other_range = HotelBooking::DateRange.new("august 1 2019", "august 4 2019")
-      
-      result = range.overlaps?(other_range)
-      expect(result).must_equal true
-    end
-    
-    it "returns true for date ranges that overlap entirely except the first ends a day later" do
-      range = HotelBooking::DateRange.new("august 1 2019", "august 4 2019")
-      other_range = HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
-      
-      result = range.overlaps?(other_range)
-      expect(result).must_equal true
-    end
-    
-    it "returns true for date ranges that overlap entirely except the second ends a day later" do
-      range = HotelBooking::DateRange.new("august 1 2019", "august 3 2019")
-      other_range = HotelBooking::DateRange.new("august 1 2019", "august 4 2019")
-      
-      result = range.overlaps?(other_range)
-      expect(result).must_equal true
+      expect(result).must_equal false
     end
     
   end
