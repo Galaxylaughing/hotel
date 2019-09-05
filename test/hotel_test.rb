@@ -368,8 +368,8 @@ describe "Hotel" do
       available_rooms = hotel.find_available_rooms("march 1 2019", "march 5 2019")
       
       expect(available_rooms.length).must_equal 19
-      available_rooms.each do |room|
-        expect(room.number).wont_equal 2
+      available_rooms.each do |available_room|
+        expect(available_room.number).wont_equal 2
       end
     end
     
@@ -387,9 +387,9 @@ describe "Hotel" do
       available_rooms = hotel.find_available_rooms("march 1 2019", "march 5 2019")
       
       expect(available_rooms.length).must_equal 18
-      available_rooms.each do |room|
-        expect(room.number).wont_equal 2
-        expect(room.number).wont_equal 12
+      available_rooms.each do |available_room|
+        expect(available_room.number).wont_equal 2
+        expect(available_room.number).wont_equal 12
       end
     end
     
