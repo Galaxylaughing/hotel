@@ -72,7 +72,7 @@ describe "Room" do
       HotelBooking::Room.new(19)
     }
     let(:date_range) {
-      HotelBooking::DateRange.new("october 1 2019", "october 4 2019")      
+      HotelBooking::DateRange.new(start_date: "october 1 2019", end_date: "october 4 2019")      
     }
     
     it "is available if it has no reservations in its list" do

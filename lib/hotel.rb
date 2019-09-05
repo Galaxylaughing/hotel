@@ -60,7 +60,7 @@ module HotelBooking
           end
         end
       else
-        range = DateRange.new(start_date, end_date)
+        range = DateRange.new(start_date: start_date, end_date: end_date)
         
         reservations.each do |reservation|
           if range.overlaps?(reservation.dates)
@@ -73,7 +73,7 @@ module HotelBooking
     end
     
     def find_available_rooms(start_date, end_date)
-      dates = DateRange.new(start_date, end_date)
+      dates = DateRange.new(start_date: start_date, end_date: end_date)
       available_rooms = []
       
       rooms.each do |hotel_room|
