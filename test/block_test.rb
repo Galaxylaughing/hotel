@@ -33,6 +33,13 @@ describe "Block" do
       expect(block.price_per_night).must_equal 150.00
     end
     
+    it "has a list of Rooms" do
+      expect(block.rooms).must_be_instance_of Array
+      block.rooms.each do |block_room|
+        expect(block_room).must_be_instance_of HotelBooking::Room
+      end
+    end
+    
   end
   
   # same as Hotel
@@ -52,6 +59,9 @@ describe "Block" do
     it "can read its end date" do
       expect(result.end_date.to_s).must_equal "2019-01-20"
     end
+  end
+  
+  describe "#add_room" do
   end
   
 end
