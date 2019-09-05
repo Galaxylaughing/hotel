@@ -1,15 +1,15 @@
 module HotelBooking
   class Reservation
     
-    attr_reader :room, :dates, :cost_per_night
+    attr_reader :room, :dates, :price_per_night
     
-    def initialize(room:, start_date:, end_date:, cost_per_night: 200.00)
+    def initialize(room:, start_date:, end_date:, price_per_night: 200.00)
       unless room.class == Room
         raise ArgumentError.new("Excepted Room instance, given #{room}")
       end
       
       @room = room
-      @cost_per_night = cost_per_night
+      @price_per_night = price_per_night
       @dates = Reservation.make_dates(start_date: start_date, end_date: end_date)
     end
     
@@ -17,9 +17,9 @@ module HotelBooking
       return DateRange.new(start_date: start_date, end_date: end_date)
     end
     
-    def total_cost()
-      total_cost = cost_per_night * dates.nights
-      return total_cost
+    def total_price()
+      total_price = price_per_night * dates.nights
+      return total_price
     end
     
   end  

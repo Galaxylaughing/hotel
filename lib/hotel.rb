@@ -1,11 +1,11 @@
 module HotelBooking
   class Hotel
     
-    attr_reader :room_total, :cost_per_night, :rooms, :reservations
+    attr_reader :room_total, :price_per_night, :rooms, :reservations
     
-    def initialize(number_of_rooms:, cost_per_night:)
+    def initialize(number_of_rooms:, price_per_night:)
       @room_total = number_of_rooms
-      @cost_per_night = cost_per_night
+      @price_per_night = price_per_night
       @rooms = load_rooms(number_of_rooms)
       @reservations = []
     end

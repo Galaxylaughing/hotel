@@ -7,7 +7,7 @@ describe "Reservation" do
       HotelBooking::Room.new(1)
     }
     let(:reservation) {
-      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 3 2019", cost_per_night: 200.00)
+      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
     }
     
     it "creates a Reservation Object" do
@@ -16,7 +16,7 @@ describe "Reservation" do
     
     it "raises an exception if handed a non-Room" do
       expect {
-        HotelBooking::Reservation.new(room: 1, start_date: "august 1 2019", end_date: "august 3 2019", cost_per_night: 200.00)
+        HotelBooking::Reservation.new(room: 1, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
       }.must_raise ArgumentError
     end
     
@@ -26,7 +26,7 @@ describe "Reservation" do
     end
     
     it "knows its price per night" do
-      expect(reservation.cost_per_night).must_equal 200.00
+      expect(reservation.price_per_night).must_equal 200.00
     end
     
     it "has a DateRange" do
@@ -69,27 +69,27 @@ describe "Reservation" do
     
   end
   
-  describe "#total_cost" do
+  describe "#total_price" do
     let(:room_one) {
       HotelBooking::Room.new(1)
     }
     let(:reservation_one) {
-      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 3 2019", cost_per_night: 200.00)
+      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
     }
     let(:reservation_two) {
-      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 30 2019", cost_per_night: 200.00)
+      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 30 2019", price_per_night: 200.00)
     }
     
     it "returns a float" do
-      expect(reservation_one.total_cost).must_be_instance_of Float
+      expect(reservation_one.total_price).must_be_instance_of Float
     end
     
-    it "can total the cost for a short reservation" do
-      expect(reservation_one.total_cost).must_equal 400.00
+    it "can total the price for a short reservation" do
+      expect(reservation_one.total_price).must_equal 400.00
     end
     
-    it "can total the cost for a long reservation" do
-      expect(reservation_two.total_cost).must_equal 5_800.00
+    it "can total the price for a long reservation" do
+      expect(reservation_two.total_price).must_equal 5_800.00
     end
     
   end
