@@ -2,7 +2,7 @@ require_relative 'test_helper'
 
 describe "Block" do
   
-  describe "initialize" do
+  describe "initialize, for a room block" do
     let(:block) {
       HotelBooking::Block.new(id: 1, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
     }
@@ -35,6 +35,38 @@ describe "Block" do
     it "has a price per night" do
       expect(block.price_per_night).must_be_instance_of Float
       expect(block.price_per_night).must_equal 150.00
+    end
+    
+    it "has a list of Rooms" do
+      expect(block.rooms).must_be_instance_of Array
+      block.rooms.each do |block_room|
+        expect(block_room).must_be_instance_of HotelBooking::Room
+      end
+    end
+    
+  end
+  
+  describe "initialize, for a hotel's default block" do
+    let(:block) {
+      HotelBooking::Block.new(price_per_night: 200.00)
+    }
+    
+    it "can create a Block instance" do
+      expect(block).must_be_instance_of HotelBooking::Block
+    end
+    
+    it "has an id" do
+      expect(block.id).must_be_instance_of Integer
+      expect(block.id).must_equal 0
+    end
+    
+    it "has a nil start date and end dates" do
+      expect(block.dates).must_be_nil
+    end
+    
+    it "has a price per night" do
+      expect(block.price_per_night).must_be_instance_of Float
+      expect(block.price_per_night).must_equal 200.00
     end
     
     it "has a list of Rooms" do
