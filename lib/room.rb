@@ -12,7 +12,7 @@ module HotelBooking
       @reservations = []
     end
     
-    def add_reservation(new_reservation)
+    def add_reservation_to_list(new_reservation)
       unless new_reservation.class == Reservation
         raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{new_reservation}")
       end

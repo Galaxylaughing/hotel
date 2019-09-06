@@ -37,7 +37,7 @@ describe "Room" do
     
   end
   
-  describe "#add_reservation" do
+  describe "#add_reservation_to_list" do
     let(:room_one) {
       HotelBooking::Room.new(1)
     }
@@ -47,21 +47,22 @@ describe "Room" do
     
     it "can add a new reservation" do
       new_reservation = HotelBooking::Reservation.new(room: room_one, start_date: "august 1", end_date: "august 5")
-      room_one.add_reservation(new_reservation)
+      
+      room_one.add_reservation_to_list(new_reservation)
       expect(room_one.reservations.length).must_equal 1
     end
     
     it "raises an exception if handed a Reservation with a non-matching room number" do
       new_reservation = HotelBooking::Reservation.new(room: room_three, start_date: "august 1", end_date: "august 5")
       expect {
-        room_one.add_reservation(new_reservation)
+        room_one.add_reservation_to_list(new_reservation)
       }.must_raise ArgumentError
     end
     
     it "raises an exception for an argument that isn't a Reservation Object" do
       new_reservation = "august 10th"
       expect {
-        room_one.add_reservation(new_reservation)
+        room_one.add_reservation_to_list(new_reservation)
       }.must_raise ArgumentError
     end
     

@@ -44,6 +44,13 @@ describe "Block" do
       end
     end
     
+    it "has a list of Reservations" do
+      expect(block.reservations).must_be_instance_of Array
+      block.reservations.each do |block_reservation|
+        expect(block_reservation).must_be_instance_of HotelBooking::Reservation
+      end
+    end
+    
   end
   
   describe "initialize, for a hotel's default block" do
@@ -76,6 +83,37 @@ describe "Block" do
       end
     end
     
+    it "has a list of Reservations" do
+      expect(block.reservations).must_be_instance_of Array
+      block.reservations.each do |block_reservation|
+        expect(block_reservation).must_be_instance_of HotelBooking::Reservation
+      end
+    end
+    
+  end
+  
+  describe "#add_reservation_to_list" do
+    let(:block) {
+      HotelBooking::Block.new(price_per_night: 200.00)
+    }
+    let(:room) {
+      HotelBooking::Room.new(1)
+    }
+    let(:new_reservation) {
+      HotelBooking::Reservation.new(room: room, start_date: "dec 1 2019", end_date: "dec 3 2019")
+    }
+    
+    it "adds a reservation instance to the list" do
+      block.add_reservation_to_list(new_reservation)
+      expect(block.reservations).must_include new_reservation
+    end
+    
+    it "raises an exception for an argument that isn't a Reservation Object" do
+      new_reservation = "august 10th"
+      expect {
+        block.add_reservation_to_list(new_reservation)
+      }.must_raise ArgumentError
+    end
   end
   
 end

@@ -57,41 +57,6 @@ module HotelBooking
       raise ArgumentError.new("No block found with the number #{block_id}")
     end
     
-    # reserve a room in a hotel
-    def reserve_room(start_date:, end_date:)
-      available_rooms = self.find_available_rooms(start_date: start_date, end_date: end_date)
-      chosen_room = available_rooms.first
-      
-      new_reservation = reservation_factory.make_reservation(room: chosen_room, start_date: start_date, end_date: end_date)
-      
-      chosen_room.reservations << new_reservation
-      reservations << new_reservation
-      
-      return new_reservation
-    end
-    
-    def block(number_of_rooms:, price_per_night:, start_date:, end_date:)
-      block_id = blocks.length
-      
-      new_block = Block.new(id: block_id, start_date: start_date, end_date: end_date, price_per_night: price_per_night)
-      
-      blocks << new_block
-      
-      return new_block
-    end
-    
-    # add Room instances to a block
-    def add_rooms_to_block(block_id)
-      block = find_block_by_id(block_id)
-      
-      available_rooms = find_available_rooms(start_date: block.dates.start_date, end_date: block.dates.end_date)
-      
-      until block.rooms.length == max_rooms_per_block
-        block.rooms << available_rooms.pop
-      end
-      
-    end
-    
     # find a Reservation instance by date
     def find_reservation_by_date(start_date, end_date = nil)
       overlapping_reservations = []
@@ -106,6 +71,51 @@ module HotelBooking
       
       return overlapping_reservations
     end
+    
+    def add_reservation_to_list(reservation)
+      unless reservation.class == Reservation
+        raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{reservation}")
+      end
+      
+      reservations << reservation
+    end
+    
+    # def make_reservation()
+    # end
+    
+    # reserve a room in a hotel
+    # def reserve_room(start_date:, end_date:)
+    #   available_rooms = self.find_available_rooms(start_date: start_date, end_date: end_date)
+    #   chosen_room = available_rooms.first
+    
+    #   new_reservation = reservation_factory.make_reservation(room: chosen_room, start_date: start_date, end_date: end_date)
+    
+    #   chosen_room.reservations << new_reservation
+    #   reservations << new_reservation
+    
+    #   return new_reservation
+    # end
+    
+    # def block(number_of_rooms:, price_per_night:, start_date:, end_date:)
+    #   block_id = blocks.length
+    
+    #   new_block = Block.new(id: block_id, start_date: start_date, end_date: end_date, price_per_night: price_per_night)
+    
+    #   blocks << new_block
+    
+    #   return new_block
+    # end
+    
+    # add Room instances to a block
+    # def add_rooms_to_block(block_id)
+    #   block = find_block_by_id(block_id)
+    
+    #   available_rooms = find_available_rooms(start_date: block.dates.start_date, end_date: block.dates.end_date)
+    
+    #   until block.rooms.length == max_rooms_per_block
+    #     block.rooms << available_rooms.pop
+    #   end
+    # end
     
     # find all available Room instances from a hotel's room list
     def find_available_rooms(start_date:, end_date:)

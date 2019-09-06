@@ -141,129 +141,129 @@ describe "Hotel" do
     end
   end
   
-  describe "#reserve_room" do
-    let(:start_date) {
-      "march 1 2019"
-    }
-    let(:end_date) {
-      "march 4 2019"
-    }
-    let(:new_reservation) {
-      hotel.reserve_room(start_date: start_date, end_date: end_date)
-    }
-    
-    # tests regarding inputs
-    it "takes only two inputs, a start date and an end date" do
-      expect {
-        hotel.reserve_room(3, start_date: start_date, end_date: end_date)
-      }.must_raise ArgumentError
-    end
-    
-    it "raises an exception for invalid dates" do
-      expect {
-        hotel.reserve_room(start_date: "cookie", end_date: "cereal")
-      }.must_raise ArgumentError
-    end
-    
-    # tests regarding finding an available room
-    it "finds room one if room one is not reserved" do
-      expect(new_reservation.room.number).must_equal 1
-    end
-    
-    it "finds room two if room two is not reserved but room one is" do
-      room = hotel.find_by_room_number(1)
-      reservation = HotelBooking::Reservation.new(room: room, start_date: start_date, end_date: end_date)
-      hotel.reservations << reservation
-      room.reservations << reservation
-      
-      expect(new_reservation.room.number).must_equal 2
-    end
-    
-    it "finds room twenty if all other rooms are reserved but it is not" do
-      hotel.rooms.each do |hotel_room|
-        if hotel_room.number != 20
-          reservation = HotelBooking::Reservation.new(room: hotel_room, start_date: start_date, end_date: end_date)
-          hotel.reservations << reservation
-          hotel_room.reservations << reservation
-        end
-      end
-      
-      expect(new_reservation.room.number).must_equal 20
-    end
-    
-    it "raises an exception if all rooms are reserved" do
-      hotel.rooms.each do |hotel_room|
-        reservation = HotelBooking::Reservation.new(room: hotel_room, start_date: start_date, end_date: end_date)
-        hotel.reservations << reservation
-        hotel_room.reservations << reservation
-      end
-      
-      expect {
-        hotel.reserve_room(start_date: start_date, end_date: end_date)
-      }.must_raise ArgumentError
-    end
-    
-    # tests regarging creation of a Reservation
-    it "instantiates a Reservation instance" do
-      expect(new_reservation).must_be_instance_of HotelBooking::Reservation
-    end
-    
-    it "creates a Reservation with the right start_date" do
-      expect(new_reservation.dates.start_date.to_s).must_equal "2019-03-01"
-    end
-    
-    it "creates a Reservation with the right end_date" do
-      expect(new_reservation.dates.end_date.to_s).must_equal "2019-03-04"
-    end
-    
-    it "adds a Reservation to a Room's list" do
-      expect(new_reservation.room.reservations).must_include new_reservation
-    end
-    
-    it "adds a Reservation to the Hotel's list" do
-      expect(hotel.reservations).must_include new_reservation
-    end
-  end
+  # describe "#reserve_room" do
+  #   let(:start_date) {
+  #     "march 1 2019"
+  #   }
+  #   let(:end_date) {
+  #     "march 4 2019"
+  #   }
+  #   let(:new_reservation) {
+  #     hotel.reserve_room(start_date: start_date, end_date: end_date)
+  #   }
   
-  describe "#block" do
-    let(:block_one) {
-      hotel.block(number_of_rooms: 3, price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
-    }
-    let(:block_two) {
-      hotel.block(number_of_rooms: 5, price_per_night: 175.00, start_date: "june 1 2019", end_date: "june 10 2019")
-    }
-    
-    it "creates a Block instance" do
-      expect(block_one).must_be_instance_of HotelBooking::Block
-    end  
-    
-    it "assigns each Block instance an ID" do
-      expect(block_one.id).must_equal 1
-      expect(block_two.id).must_equal 2
-    end
-    
-    it "adds each Block instance to the hotel list" do
-      block_one
-      block_two    
-      expect(hotel.blocks.length).must_equal 3
-    end
-  end
+  #   # tests regarding inputs
+  #   it "takes only two inputs, a start date and an end date" do
+  #     expect {
+  #       hotel.reserve_room(3, start_date: start_date, end_date: end_date)
+  #     }.must_raise ArgumentError
+  #   end
   
-  describe "#add_rooms_to_block" do
-    let(:new_block) {
-      HotelBooking::Block.new(id: 1, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
-    }
-    
-    it "can populate a Block's list of rooms" do
-      hotel.blocks << new_block
-      hotel.add_rooms_to_block(1)
-      
-      expect(new_block.rooms.length).must_equal 5
-      new_block.rooms.each do |block_room|
-        expect(block_room).must_be_instance_of HotelBooking::Room
-      end
-    end
-  end
+  #   it "raises an exception for invalid dates" do
+  #     expect {
+  #       hotel.reserve_room(start_date: "cookie", end_date: "cereal")
+  #     }.must_raise ArgumentError
+  #   end
+  
+  #   # tests regarding finding an available room
+  #   it "finds room one if room one is not reserved" do
+  #     expect(new_reservation.room.number).must_equal 1
+  #   end
+  
+  #   it "finds room two if room two is not reserved but room one is" do
+  #     room = hotel.find_by_room_number(1)
+  #     reservation = HotelBooking::Reservation.new(room: room, start_date: start_date, end_date: end_date)
+  #     hotel.reservations << reservation
+  #     room.reservations << reservation
+  
+  #     expect(new_reservation.room.number).must_equal 2
+  #   end
+  
+  #   it "finds room twenty if all other rooms are reserved but it is not" do
+  #     hotel.rooms.each do |hotel_room|
+  #       if hotel_room.number != 20
+  #         reservation = HotelBooking::Reservation.new(room: hotel_room, start_date: start_date, end_date: end_date)
+  #         hotel.reservations << reservation
+  #         hotel_room.reservations << reservation
+  #       end
+  #     end
+  
+  #     expect(new_reservation.room.number).must_equal 20
+  #   end
+  
+  #   it "raises an exception if all rooms are reserved" do
+  #     hotel.rooms.each do |hotel_room|
+  #       reservation = HotelBooking::Reservation.new(room: hotel_room, start_date: start_date, end_date: end_date)
+  #       hotel.reservations << reservation
+  #       hotel_room.reservations << reservation
+  #     end
+  
+  #     expect {
+  #       hotel.reserve_room(start_date: start_date, end_date: end_date)
+  #     }.must_raise ArgumentError
+  #   end
+  
+  #   # tests regarging creation of a Reservation
+  #   it "instantiates a Reservation instance" do
+  #     expect(new_reservation).must_be_instance_of HotelBooking::Reservation
+  #   end
+  
+  #   it "creates a Reservation with the right start_date" do
+  #     expect(new_reservation.dates.start_date.to_s).must_equal "2019-03-01"
+  #   end
+  
+  #   it "creates a Reservation with the right end_date" do
+  #     expect(new_reservation.dates.end_date.to_s).must_equal "2019-03-04"
+  #   end
+  
+  #   it "adds a Reservation to a Room's list" do
+  #     expect(new_reservation.room.reservations).must_include new_reservation
+  #   end
+  
+  #   it "adds a Reservation to the Hotel's list" do
+  #     expect(hotel.reservations).must_include new_reservation
+  #   end
+  # end
+  
+  # describe "#block" do
+  #   let(:block_one) {
+  #     hotel.block(number_of_rooms: 3, price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
+  #   }
+  #   let(:block_two) {
+  #     hotel.block(number_of_rooms: 5, price_per_night: 175.00, start_date: "june 1 2019", end_date: "june 10 2019")
+  #   }
+  
+  #   it "creates a Block instance" do
+  #     expect(block_one).must_be_instance_of HotelBooking::Block
+  #   end  
+  
+  #   it "assigns each Block instance an ID" do
+  #     expect(block_one.id).must_equal 1
+  #     expect(block_two.id).must_equal 2
+  #   end
+  
+  #   it "adds each Block instance to the hotel list" do
+  #     block_one
+  #     block_two    
+  #     expect(hotel.blocks.length).must_equal 3
+  #   end
+  # end
+  
+  # describe "#add_rooms_to_block" do
+  #   let(:new_block) {
+  #     HotelBooking::Block.new(id: 1, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
+  #   }
+  
+  #   it "can populate a Block's list of rooms" do
+  #     hotel.blocks << new_block
+  #     hotel.add_rooms_to_block(1)
+  
+  #     expect(new_block.rooms.length).must_equal 5
+  #     new_block.rooms.each do |block_room|
+  #       expect(block_room).must_be_instance_of HotelBooking::Room
+  #     end
+  #   end
+  # end
   
   describe "#find_reservation_by_date" do
     let(:start_date) {
@@ -380,7 +380,8 @@ describe "Hotel" do
     it "raise an exception if no rooms are available" do
       hotel.room_total.times do |room_num|
         room = hotel.find_by_room_number(room_num + 1)
-        new_reservation = HotelBooking::Reservation.new(room: room, start_date: "feb 1 2019", end_date: "feb 5 2019")
+        new_reservation = hotel.reservation_factory.make_reservation(room: room, start_date: "feb 1 2019", end_date: "feb 5 2019")
+        
         hotel.reservations << new_reservation
         room.reservations << new_reservation
       end
@@ -392,7 +393,8 @@ describe "Hotel" do
     
     it "returns all but one room if one room has been reserved" do
       room = hotel.find_by_room_number(2)
-      new_reservation = HotelBooking::Reservation.new(room: room, start_date: "march 1 2019", end_date: "march 5 2019")
+      new_reservation = hotel.reservation_factory.make_reservation(room: room, start_date: "march 1 2019", end_date: "march 5 2019")
+      
       hotel.reservations << new_reservation
       room.reservations << new_reservation
       
@@ -406,12 +408,14 @@ describe "Hotel" do
     
     it "returns all but two rooms if two rooms have been reserved" do
       room = hotel.find_by_room_number(2)
-      new_reservation = HotelBooking::Reservation.new(room: room, start_date: "march 1 2019", end_date: "march 5 2019")
+      new_reservation = hotel.reservation_factory.make_reservation(room: room, start_date: "march 1 2019", end_date: "march 5 2019")
+      
       hotel.reservations << new_reservation
       room.reservations << new_reservation
       
       other_room = hotel.find_by_room_number(12)
-      second_reservation = HotelBooking::Reservation.new(room: other_room, start_date: "march 1 2019", end_date: "march 5 2019")
+      second_reservation = hotel.reservation_factory.make_reservation(room: other_room, start_date: "march 1 2019", end_date: "march 5 2019")
+      
       hotel.reservations << second_reservation
       other_room.reservations << second_reservation
       
@@ -424,5 +428,38 @@ describe "Hotel" do
       end
     end
   end
+  
+  describe "#add_reservation_to_list" do
+    let(:new_reservation) {
+      HotelBooking::Reservation.new(room: room_two, start_date: "dec 1 2019", end_date: "dec 3 2019")
+    }
+    
+    it "adds a reservation instance to the list" do
+      hotel.add_reservation_to_list(new_reservation)
+      expect(hotel.reservations).must_include new_reservation
+    end
+    
+    it "raises an exception for an argument that isn't a Reservation Object" do
+      new_reservation = "august 10th"
+      expect {
+        hotel.add_reservation_to_list(new_reservation)
+      }.must_raise ArgumentError
+    end
+    
+  end
+  
+  describe "#reserve_room" do
+    
+    it "should create a reservation instance" do
+    end
+    
+    it "by default, should add the reservation to the default block" do
+    end
+    
+    it "should add the reservation to specific block if given one" do
+    end
+    
+  end
+  
   
 end
