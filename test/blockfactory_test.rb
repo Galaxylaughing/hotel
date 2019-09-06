@@ -1,6 +1,6 @@
 require_relative 'test_helper'
 
-describe "Block" do
+describe "BlockFactory" do
   let(:block_factory) {
     HotelBooking::BlockFactory.new()
   }
