@@ -18,9 +18,9 @@ describe "BlockFactory" do
       expect(new_block.id).must_equal 1
     end
     
-    # it "must have access to its number of rooms" do
-    #   expect(new_block.rooms.length).must_equal 3
-    # end
+    it "must have access to its number of rooms" do
+      expect(new_block.rooms.length).must_equal 3
+    end
     
     it "must have a DateRange" do
       expect(new_block.dates).must_be_instance_of HotelBooking::DateRange
