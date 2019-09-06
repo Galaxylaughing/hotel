@@ -264,7 +264,7 @@ describe "Hotel" do
     end
   end
   
-  describe "#find_by_date" do
+  describe "#find_reservation_by_date" do
     let(:start_date) {
       "feb 3 2019"
     }
@@ -276,7 +276,7 @@ describe "Hotel" do
       reservation = HotelBooking::Reservation.new(room: room_two, start_date: start_date, end_date: end_date)
       hotel.reservations << reservation
       
-      overlapping_reservations = hotel.find_by_date("feb 4 2019")
+      overlapping_reservations = hotel.find_reservation_by_date("feb 4 2019")
       expect(overlapping_reservations).must_include reservation
     end
     
@@ -293,7 +293,7 @@ describe "Hotel" do
       total_overlap = HotelBooking::Reservation.new(room: room_two, start_date: start_date, end_date: end_date)
       hotel.reservations << total_overlap
       
-      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      overlapping_reservations = hotel.find_reservation_by_date(start_date, end_date)
       expect(overlapping_reservations).must_include total_overlap
     end
     
@@ -301,7 +301,7 @@ describe "Hotel" do
       middle_overlap = HotelBooking::Reservation.new(room: room_two, start_date: "feb 4 2019", end_date: "feb 5 2019")
       hotel.reservations << middle_overlap
       
-      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      overlapping_reservations = hotel.find_reservation_by_date(start_date, end_date)
       expect(overlapping_reservations).must_include middle_overlap
     end
     
@@ -309,7 +309,7 @@ describe "Hotel" do
       beginning_overlap = HotelBooking::Reservation.new(room: room_two, start_date: "feb 2 2019", end_date: "feb 4 2019")
       hotel.reservations << beginning_overlap
       
-      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      overlapping_reservations = hotel.find_reservation_by_date(start_date, end_date)
       expect(overlapping_reservations).must_include beginning_overlap
     end
     
@@ -317,7 +317,7 @@ describe "Hotel" do
       ending_overlap = HotelBooking::Reservation.new(room: room_two, start_date: "feb 5 2019", end_date: "feb 7 2019")
       hotel.reservations << ending_overlap
       
-      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      overlapping_reservations = hotel.find_reservation_by_date(start_date, end_date)
       expect(overlapping_reservations).must_include ending_overlap
     end
     
@@ -328,7 +328,7 @@ describe "Hotel" do
       hotel.reservations << beginning_overlap
       hotel.reservations << ending_overlap
       
-      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      overlapping_reservations = hotel.find_reservation_by_date(start_date, end_date)
       expect(overlapping_reservations).must_be_instance_of Array
       
       overlapping_reservations.each do |single_reservation|
@@ -351,7 +351,7 @@ describe "Hotel" do
       overlaps_checkin = HotelBooking::Reservation.new(room: room_two, start_date: "feb 1 2019", end_date: "feb 3 2019")
       hotel.reservations << overlaps_checkin
       
-      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      overlapping_reservations = hotel.find_reservation_by_date(start_date, end_date)
       expect(overlapping_reservations).wont_include overlaps_checkin
     end
     
@@ -359,7 +359,7 @@ describe "Hotel" do
       overlaps_checkout = HotelBooking::Reservation.new(room: room_two, start_date: "feb 6 2019", end_date: "feb 8 2019")
       hotel.reservations << overlaps_checkout
       
-      overlapping_reservations = hotel.find_by_date(start_date, end_date)
+      overlapping_reservations = hotel.find_reservation_by_date(start_date, end_date)
       expect(overlapping_reservations).wont_include overlaps_checkout
     end
     

@@ -92,7 +92,7 @@ module HotelBooking
     end
     
     # find a Reservation instance by date
-    def find_by_date(start_date, end_date = nil)
+    def find_reservation_by_date(start_date, end_date = nil)
       overlapping_reservations = []
       
       range = daterange_factory.make_daterange(start_date: start_date, end_date: end_date)
