@@ -24,7 +24,7 @@ describe "Block" do
       expect(new_block.dates.end_date).must_be_instance_of Date
     end
     
-    it "must have a special price" do
+    it "must have a particular price" do
       expect(new_block.price_per_night).must_be_instance_of Float
       expect(new_block.price_per_night).must_equal 160.00
     end
