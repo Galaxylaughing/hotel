@@ -104,6 +104,13 @@ describe "Block" do
       end
     end
     
+    it "raises an exception if a non-default block tries to access it" do
+      new_block = HotelBooking::Block.new(id: 1, number_of_rooms: 3, price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
+      expect {
+        new_block.load_rooms("20")
+      }.must_raise ArgumentError
+    end
+    
     # for loop automatically raises an ArgumentError "bad value for range"
     it "raises an exception if not given a valid integer" do
       expect {
@@ -113,29 +120,29 @@ describe "Block" do
   end
   
   describe "#contains_room?" do
-    let(:default_block) {
-      HotelBooking::Block.new(number_of_rooms: 20, price_per_night: 200.00)
+    let(:hotel) {
+      HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
     }
-    let(:special_block) {
-      HotelBooking::Block.new(number_of_rooms: 3, price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
+    let(:block_one) {
+      hotel.create_block(number_of_rooms: 3, price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
     }
     
     it "returns true if the default block contains the room" do
-      expect(default_block.contains_room?(18)).must_equal true
+      expect(hotel.blocks[0].contains_room?(18)).must_equal true
     end
     
     it "returns false if the default block does NOT contain the room" do
-      expect(default_block.contains_room?("cookie")).must_equal false
+      expect(hotel.blocks[0].contains_room?("cookie")).must_equal false
     end
     
     # there should not be any reservations yet for any rooms
     # so room 1 should be available to be assigned to the new block
     it "returns true if a special block contains the room" do
-      expect(special_block.contains_room?(1)).must_equal true
+      expect(block_one.contains_room?(1)).must_equal true
     end
     
     it "returns false if a special block does NOT contain the room" do
-      expect(special_block.contains_room?("cookie")).must_equal false
+      expect(block_one.contains_room?("cookie")).must_equal false
     end
     
   end

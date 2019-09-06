@@ -19,7 +19,7 @@ describe "BlockFactory" do
     end
     
     it "must have access to its number of rooms" do
-      expect(new_block.rooms.length).must_equal 3
+      expect(new_block.room_total).must_equal 3
     end
     
     it "must have a DateRange" do

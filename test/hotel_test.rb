@@ -247,11 +247,14 @@
     end
     
     describe "#create_block" do
+      let(:new_hotel) {
+        HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
+      }
       let(:block_one) {
-        hotel.create_block(number_of_rooms: 3, price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
+        new_hotel.create_block(number_of_rooms: 3, price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
       }
       let(:block_two) {
-        hotel.create_block(number_of_rooms: 5, price_per_night: 175.00, start_date: "june 1 2019", end_date: "june 10 2019")
+        new_hotel.create_block(number_of_rooms: 5, price_per_night: 175.00, start_date: "june 1 2019", end_date: "june 10 2019")
       }
       
       it "creates a Block instance" do
@@ -266,16 +269,24 @@
       it "adds each Block instance to the hotel list" do
         block_one
         block_two    
-        expect(hotel.blocks.length).must_equal 3
+        expect(new_hotel.blocks.length).must_equal 3
       end
+      
+      it "should create a block with a given number of rooms" do
+        expect(block_one.rooms.length).must_equal 3
+        expect(block_two.rooms.length).must_equal 5
+      end
+      
+      it "must have a subset of the rooms from the default block" do        
+        expect(block_one.rooms).must_include new_hotel.blocks[0].rooms[0]    
+      end
+      
     end
     
     describe "#add_rooms_to_block" do
-      let(:new_block) {
-        HotelBooking::Block.new(id: 1, number_of_rooms: 5, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
-      }
-      
-      it "can populate a Block's list of rooms" do
+      it "can populate a Block's list of rooms with the max number of rooms" do
+        new_block = HotelBooking::Block.new(id: 1, number_of_rooms: 5, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
+        
         hotel.blocks << new_block
         hotel.add_rooms_to_block(new_block)
         
@@ -283,7 +294,19 @@
         new_block.rooms.each do |block_room|
           expect(block_room).must_be_instance_of HotelBooking::Room
         end
-      end
+      end     
+      
+      it "can populate a Block's list of rooms with a single room" do
+        new_block = HotelBooking::Block.new(id: 1, number_of_rooms: 1, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
+        
+        hotel.blocks << new_block
+        hotel.add_rooms_to_block(new_block)
+        
+        expect(new_block.rooms.length).must_equal 1
+        new_block.rooms.each do |block_room|
+          expect(block_room).must_be_instance_of HotelBooking::Room
+        end
+      end   
     end
     
     describe "#find_available_rooms" do

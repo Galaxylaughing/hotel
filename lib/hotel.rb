@@ -93,8 +93,10 @@ module HotelBooking
     def add_rooms_to_block(block)
       available_rooms = find_available_rooms(start_date: block.dates.start_date, end_date: block.dates.end_date)
       
-      until block.rooms.length == max_rooms_per_block
-        block.rooms << available_rooms.pop
+      index = 0
+      until block.rooms.length == block.room_total || block.rooms.length == block.room_total
+        block.rooms << available_rooms[index]
+        index += 1
       end
     end
     
