@@ -3,9 +3,14 @@ module HotelBooking
     
     attr_reader :start_date, :end_date, :nights
     
-    def initialize(start_date:, end_date:)
+    def initialize(start_date:, end_date: nil)
       date_one = DateRange.make_date(start_date)
-      date_two = DateRange.make_date(end_date)
+      
+      if end_date.nil?
+        date_two = date_one + 1
+      else
+        date_two = DateRange.make_date(end_date)
+      end
       
       if DateRange.is_valid?(start_date: date_one, end_date: date_two)
         @start_date = date_one

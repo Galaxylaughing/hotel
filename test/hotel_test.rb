@@ -59,7 +59,7 @@ describe "Hotel" do
     end
   end
   
-  describe ".load_rooms" do
+  describe "#load_rooms" do
     it "creates an collection of Rooms" do
       new_rooms = hotel.load_rooms(20)
       expect(new_rooms).must_be_instance_of Array
@@ -74,6 +74,23 @@ describe "Hotel" do
         hotel.load_rooms("20")
       }.must_raise ArgumentError
     end
+  end
+  
+  describe "#load_default_block" do
+    
+    it "creates a new block" do
+      hotel.load_default_block()
+      
+      expect(hotel.blocks.length).must_equal 1
+    end
+    
+    it "creates a block with the id of zero" do
+      hotel.load_default_block()
+      
+      expect(hotel.blocks.first).must_be_instance_of HotelBooking::Block
+      expect(hotel.blocks.first.id).must_equal 0
+    end
+    
   end
   
   describe "#find_by_room_number" do
@@ -106,24 +123,24 @@ describe "Hotel" do
     
     it "returns a Block instance" do
       hotel.blocks << new_block
-      found_block = hotel.find_block_by_id(block_id: 5)
+      found_block = hotel.find_block_by_id(5)
       expect(found_block).must_be_instance_of HotelBooking::Block
     end
     
     it "raises an error for nonexistent block IDs" do
       expect {
-        hotel.find_block_by_id(block_id: 40)
+        hotel.find_block_by_id(40)
       }.must_raise ArgumentError
     end
     
     it "raises an error for invalid block IDs" do
       expect {
-        hotel.find_block_by_id(block_id: "cookie")
+        hotel.find_block_by_id("cookie")
       }.must_raise ArgumentError
     end
   end
   
-  describe "#reserve" do
+  describe "#reserve_room" do
     let(:start_date) {
       "march 1 2019"
     }
@@ -131,19 +148,19 @@ describe "Hotel" do
       "march 4 2019"
     }
     let(:new_reservation) {
-      hotel.reserve(start_date: start_date, end_date: end_date)
+      hotel.reserve_room(start_date: start_date, end_date: end_date)
     }
     
     # tests regarding inputs
     it "takes only two inputs, a start date and an end date" do
       expect {
-        hotel.reserve(3, start_date: start_date, end_date: end_date)
+        hotel.reserve_room(3, start_date: start_date, end_date: end_date)
       }.must_raise ArgumentError
     end
     
     it "raises an exception for invalid dates" do
       expect {
-        hotel.reserve(start_date: "cookie", end_date: "cereal")
+        hotel.reserve_room(start_date: "cookie", end_date: "cereal")
       }.must_raise ArgumentError
     end
     
@@ -181,7 +198,7 @@ describe "Hotel" do
       end
       
       expect {
-        hotel.reserve(start_date: start_date, end_date: end_date)
+        hotel.reserve_room(start_date: start_date, end_date: end_date)
       }.must_raise ArgumentError
     end
     
@@ -238,7 +255,7 @@ describe "Hotel" do
     
     it "can populate a Block's list of rooms" do
       hotel.blocks << new_block
-      hotel.add_rooms_to_block(block_id: 1)
+      hotel.add_rooms_to_block(1)
       
       expect(new_block.rooms.length).must_equal 5
       new_block.rooms.each do |block_room|

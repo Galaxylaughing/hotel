@@ -43,6 +43,11 @@ describe "DateRange" do
       expect(daterange.nights).must_be_instance_of Integer
     end
     
+    it "will add a night to single-day ranges" do
+      range = HotelBooking::DateRange.new(start_date: "august 1 2019")
+      expect(range.end_date).must_equal (range.start_date + 1)
+    end
+    
     # verifies constructor won't permit invalid inputs
     it "raises an exception for invalid ranges" do
       expect {
