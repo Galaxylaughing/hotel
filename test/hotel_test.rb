@@ -370,6 +370,19 @@
           expect(available_room.number).wont_equal 12
         end
       end
+      
+      it "does not return a room that is in a block at the time" do
+        new_hotel = HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
+        
+        block = new_hotel.create_block(number_of_rooms: 5, start_date: "october 1 2019", end_date: "october 4 2019", price_per_night: 140.00)
+        
+        expect(block.rooms).must_include new_hotel.blocks[0].rooms[0], "expect #{new_hotel.blocks[0].rooms[0]}, got #{block.rooms}"
+        
+        available_rooms = new_hotel.find_available_rooms(start_date: "october 1 2019", end_date: "october 4 2019")
+        
+        expect(available_rooms).wont_include hotel.blocks[0].rooms[0], "expected #{available_rooms} would not include #{hotel.blocks[0].rooms[0]}"
+      end
+      
     end
     
     describe "#add_reservation_to_list" do

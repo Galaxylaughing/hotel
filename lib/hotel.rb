@@ -106,9 +106,17 @@ module HotelBooking
       available_rooms = []
       
       blocks[0].rooms.each do |hotel_room|
-        if hotel_room.is_available?(dates)
-          available_rooms << hotel_room
+        
+        blocks.each do |hotel_block|
+          if !(hotel_block.contains_room?(hotel_room)) && hotel_room.is_available?(dates)
+            available_rooms << hotel_room
+          end
         end
+        
+        # if hotel_room.is_available?(dates)
+        #   available_rooms << hotel_room
+        # end
+        
       end
       
       if available_rooms.length == 0

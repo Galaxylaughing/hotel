@@ -110,25 +110,6 @@ describe "Room" do
       expect(room.is_available?(date_range)).must_equal false
     end
     
-    # it "is not available if it's in a block at the time" do
-    #   # COME BACK TO
-    #   date_range = HotelBooking::DateRange.new(start_date: "october 1 2019", end_date: "october 4 2019")      
-    
-    #   # create hotel
-    #   hotel = HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
-    
-    #   # create block
-    #   block = hotel.create_block(number_of_rooms: 5, start_date: "october 1 2019", end_date: "october 4 2019", price_per_night: 140.00)
-    
-    #   expect(block.rooms).must_include hotel.blocks[0].rooms[0]
-    
-    #   # ask the first room if it's available during that block
-    #   availability = hotel.blocks[0].rooms[0].is_available?(date_range)
-    
-    #   # it should say no
-    #   expect(availability).must_equal false
-    # end
-    
   end
   
 end

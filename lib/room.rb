@@ -26,11 +26,13 @@ module HotelBooking
     
     def is_available?(date_range)
       available = true
+      
       reservations.each do |single_reservation|
         if single_reservation.dates.overlaps?(date_range)
           available = false
         end
       end
+      
       return available
     end
     
