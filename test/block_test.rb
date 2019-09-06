@@ -4,7 +4,7 @@ describe "Block" do
   
   describe "initialize, for a room block" do
     let(:block) {
-      HotelBooking::Block.new(id: 1, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
+      HotelBooking::Block.new(id: 1, number_of_rooms: 5, start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00)
     }
     
     it "can create a Block instance" do
@@ -55,7 +55,7 @@ describe "Block" do
   
   describe "initialize, for a hotel's default block" do
     let(:block) {
-      HotelBooking::Block.new(price_per_night: 200.00)
+      HotelBooking::Block.new(number_of_rooms: 20, price_per_night: 200.00)
     }
     
     it "can create a Block instance" do
@@ -89,12 +89,32 @@ describe "Block" do
         expect(block_reservation).must_be_instance_of HotelBooking::Reservation
       end
     end
+  end
+  
+  describe "#load_rooms" do
+    let(:block) {
+      HotelBooking::Block.new(number_of_rooms: 20, price_per_night: 200.00)
+    }
     
+    it "creates an collection of Rooms" do
+      new_rooms = block.load_rooms(20)
+      expect(new_rooms).must_be_instance_of Array
+      new_rooms.each do |single_room|
+        expect(single_room).must_be_instance_of HotelBooking::Room
+      end
+    end
+    
+    # for loop automatically raises an ArgumentError "bad value for range"
+    it "raises an exception if not given a valid integer" do
+      expect {
+        block.load_rooms("20")
+      }.must_raise ArgumentError
+    end
   end
   
   describe "#add_reservation_to_list" do
     let(:block) {
-      HotelBooking::Block.new(price_per_night: 200.00)
+      HotelBooking::Block.new(number_of_rooms: 20, price_per_night: 200.00)
     }
     let(:room) {
       HotelBooking::Room.new(1)

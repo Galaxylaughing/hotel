@@ -1,7 +1,7 @@
 module HotelBooking
   class Hotel
     
-    attr_reader :room_total, :price_per_night, :rooms, :reservations, :max_rooms_per_block, :blocks
+    attr_reader :room_total, :price_per_night, :reservations, :max_rooms_per_block, :blocks
     
     attr_accessor :room_factory, :reservation_factory, :date_factory, :block_factory, :daterange_factory
     
@@ -18,28 +18,16 @@ module HotelBooking
       @date_factory = DateFactory.new()
       @block_factory = BlockFactory.new()
       
-      @blocks = load_default_block()
-      @rooms = load_rooms(number_of_rooms)
+      @blocks = load_default_block(number_of_rooms)
     end
     
-    # populate a hotel's @rooms list
-    def load_rooms(number_of_rooms)
-      rooms_list = []
-      for room_number in 1..number_of_rooms
-        rooms_list << room_factory.make_room(room_number)
-      end
-      return rooms_list
-    end
-    
-    # give a hotel with its default block
-    def load_default_block()
+    def load_default_block(number_of_rooms)
       blocks = []
-      blocks << block_factory.make_block(id: 0, price_per_night: price_per_night)
+      blocks << block_factory.make_block(id: 0, number_of_rooms: number_of_rooms, price_per_night: price_per_night)
     end
     
-    # find a Room instance by its number
     def find_by_room_number(room_number)
-      rooms.each do |hotel_room|
+      blocks[0].rooms.each do |hotel_room|
         if hotel_room.number == room_number
           return hotel_room
         end
@@ -47,7 +35,6 @@ module HotelBooking
       raise ArgumentError.new("No room found with the number #{room_number}")
     end
     
-    # find a Block instance by its ID
     def find_block_by_id(block_id)
       blocks.each do |hotel_block|
         if hotel_block.id == block_id
@@ -57,7 +44,6 @@ module HotelBooking
       raise ArgumentError.new("No block found with the number #{block_id}")
     end
     
-    # find a Reservation instance by date
     def find_reservation_by_date(start_date, end_date = nil)
       overlapping_reservations = []
       
@@ -80,50 +66,44 @@ module HotelBooking
       reservations << reservation
     end
     
-    # def make_reservation()
-    # end
+    def create_block(number_of_rooms:, price_per_night:, start_date:, end_date:)
+      block_id = blocks.length
+      
+      new_block = block_factory.make_block(id: block_id, number_of_rooms: number_of_rooms, start_date: start_date, end_date: end_date, price_per_night: price_per_night)
+      
+      add_rooms_to_block(new_block)
+      
+      blocks << new_block
+      
+      return new_block
+    end
     
-    # reserve a room in a hotel
-    # def reserve_room(start_date:, end_date:)
-    #   available_rooms = self.find_available_rooms(start_date: start_date, end_date: end_date)
-    #   chosen_room = available_rooms.first
+    def reserve_room(block_id: 0, start_date:, end_date:)
+      available_rooms = find_available_rooms(start_date: start_date, end_date: end_date)
+      chosen_room = available_rooms.first
+      
+      new_reservation = reservation_factory.make_reservation(room: chosen_room, start_date: start_date, end_date: end_date)
+      
+      chosen_room.reservations << new_reservation
+      reservations << new_reservation
+      
+      return new_reservation
+    end
     
-    #   new_reservation = reservation_factory.make_reservation(room: chosen_room, start_date: start_date, end_date: end_date)
+    def add_rooms_to_block(block)
+      available_rooms = find_available_rooms(start_date: block.dates.start_date, end_date: block.dates.end_date)
+      
+      until block.rooms.length == max_rooms_per_block
+        block.rooms << available_rooms.pop
+      end
+    end
     
-    #   chosen_room.reservations << new_reservation
-    #   reservations << new_reservation
-    
-    #   return new_reservation
-    # end
-    
-    # def block(number_of_rooms:, price_per_night:, start_date:, end_date:)
-    #   block_id = blocks.length
-    
-    #   new_block = Block.new(id: block_id, start_date: start_date, end_date: end_date, price_per_night: price_per_night)
-    
-    #   blocks << new_block
-    
-    #   return new_block
-    # end
-    
-    # add Room instances to a block
-    # def add_rooms_to_block(block_id)
-    #   block = find_block_by_id(block_id)
-    
-    #   available_rooms = find_available_rooms(start_date: block.dates.start_date, end_date: block.dates.end_date)
-    
-    #   until block.rooms.length == max_rooms_per_block
-    #     block.rooms << available_rooms.pop
-    #   end
-    # end
-    
-    # find all available Room instances from a hotel's room list
     def find_available_rooms(start_date:, end_date:)
       dates = daterange_factory.make_daterange(start_date: start_date, end_date: end_date)
       
       available_rooms = []
       
-      rooms.each do |hotel_room|
+      blocks[0].rooms.each do |hotel_room|
         if hotel_room.is_available?(dates)
           available_rooms << hotel_room
         end

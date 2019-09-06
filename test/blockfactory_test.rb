@@ -5,7 +5,7 @@ describe "BlockFactory" do
     HotelBooking::BlockFactory.new()
   }
   let(:new_block) {
-    block_factory.make_block(id: 1, start_date: "feb 1 2019", end_date: "feb 22 2019", price_per_night: 160.00)
+    block_factory.make_block(id: 1, number_of_rooms: 3, start_date: "feb 1 2019", end_date: "feb 22 2019", price_per_night: 160.00)
   }
   
   describe "#make_block" do
@@ -17,6 +17,10 @@ describe "BlockFactory" do
     it "must have access to its Block ID" do
       expect(new_block.id).must_equal 1
     end
+    
+    # it "must have access to its number of rooms" do
+    #   expect(new_block.rooms.length).must_equal 3
+    # end
     
     it "must have a DateRange" do
       expect(new_block.dates).must_be_instance_of HotelBooking::DateRange

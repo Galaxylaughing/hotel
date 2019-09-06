@@ -110,6 +110,10 @@ describe "Room" do
       expect(room.is_available?(date_range)).must_equal false
     end
     
+    it "is not available if it's in a block at the time" do
+      # COME BACK TO
+    end
+    
   end
   
 end
