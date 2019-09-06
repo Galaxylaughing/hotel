@@ -43,7 +43,6 @@ describe "Reservation" do
     
   end
   
-  
   describe "#make_dates" do
     let(:result) {
       HotelBooking::Reservation.make_dates(start_date: "august 1 2019", end_date: "august 3 2019")
