@@ -28,6 +28,15 @@ module HotelBooking
       return rooms_list
     end
     
+    def contains_room?(room_number)
+      rooms.each do |block_room|
+        if block_room.number == room_number
+          return true
+        end
+      end
+      return false
+    end
+    
     def add_reservation_to_list(reservation)
       unless reservation.class == Reservation
         raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{reservation}")

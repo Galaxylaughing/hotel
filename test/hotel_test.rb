@@ -369,6 +369,7 @@
     end
     
     describe "#reserve_room" do
+      #
     end
     
     # describe "#reserve_room" do
