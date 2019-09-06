@@ -3,7 +3,7 @@ module HotelBooking
     
     attr_reader :room_total, :price_per_night, :rooms, :reservations, :max_rooms_per_block, :blocks
     
-    attr_accessor :room_factory, :reservation_factory, :daterange_factory, :date_factory, :block_factory
+    attr_accessor :room_factory, :reservation_factory, :date_factory, :block_factory, :daterange_factory
     
     def initialize(number_of_rooms:, price_per_night:, max_rooms_per_block: nil)
       @room_total = number_of_rooms
@@ -11,7 +11,6 @@ module HotelBooking
       @max_rooms_per_block = max_rooms_per_block
       
       @reservations = []
-      @blocks = []
       
       @room_factory = RoomFactory.new()
       @reservation_factory = ReservationFactory.new()
@@ -19,6 +18,7 @@ module HotelBooking
       @date_factory = DateFactory.new()
       @block_factory = BlockFactory.new()
       
+      @blocks = load_default_block()
       @rooms = load_rooms(number_of_rooms)
     end
     
@@ -33,6 +33,7 @@ module HotelBooking
     
     # give a hotel with its default block
     def load_default_block()
+      blocks = []
       blocks << block_factory.make_block(id: 0, price_per_night: price_per_night)
     end
     
@@ -70,7 +71,7 @@ module HotelBooking
     end
     
     def block(number_of_rooms:, price_per_night:, start_date:, end_date:)
-      block_id = (blocks.length + 1)
+      block_id = blocks.length
       
       new_block = Block.new(id: block_id, start_date: start_date, end_date: end_date, price_per_night: price_per_night)
       

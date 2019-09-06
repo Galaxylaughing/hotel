@@ -4,9 +4,6 @@ describe "Hotel" do
   let(:hotel) {
     HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
   }
-  let(:room_factory) {
-    HotelBooking::RoomFactory.new()
-  }
   let(:room_two) {
     HotelBooking::Room.new(2)
   }
@@ -77,6 +74,10 @@ describe "Hotel" do
   end
   
   describe "#load_default_block" do
+    
+    it "creates a collection of blocks" do
+      expect(hotel.blocks).must_be_instance_of Array
+    end
     
     it "creates a new block" do
       hotel.load_default_block()
@@ -244,7 +245,7 @@ describe "Hotel" do
     it "adds each Block instance to the hotel list" do
       block_one
       block_two    
-      expect(hotel.blocks.length).must_equal 2
+      expect(hotel.blocks.length).must_equal 3
     end
   end
   
