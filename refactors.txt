@@ -1,0 +1,21 @@
+1. Currently, Reservation#includes_date turns the single date it receives into a DateRange in order to call DateRange#overlaps, I should have that Reservation#includes_date method simply call a new method DateRange#includes. 
+
+DateRange#includes would take a single date and convert that date into a new DateRange with a nil end_date (an operation currently being performed by Reservation#includes_date) and then call DateRange#overlaps.
+
+Thus, in this situation, DateRange#overlaps would return its boolean to DateRange#includes, which would pass it back to Reservation#includes_date, which would return it to whoever called Reservation#includes_date (Room#find_reservations_by_date, who returns it to Block#find_reservations_by_date, who returns it ultimately to Hotel#find_reservations_by_date).
+
+
+2. Instead of calling my variables for the number of rooms a Hotel or Block has `room_total`, I could call them `room_count`. And I would change the keyword variable `number_of_rooms` to be `room_count` as well.
+
+
+3. Instead of having DateRange have `start_date` and `end_date` instance variables, I could have it create a Range (a Ruby Range, rather than something I created) in its initializer method. This would become an instance variable called `range`, and `:range` would replace `:start_date` and `:end_date` in the attr_reader line.
+
+Then I could call Range#begin and Range#end to get the start date and end date whenever I need them. So instead of calling `dates.start_date` on an object with a DateRange, I would call `dates.range.begin`.
+
+This would clean up DateRange#overlaps' need to turn DateRange@start_date and DateRange@end_date into a range in order to perform its operation, because `range_one` inside DateRange#overlaps would simply become `range`, referencing the attr_reader method for DateRange@range.
+
+
+4. I would rename the method Reservation#total_price to be Reservation#get_total_price, because I think it's ambiguous as to whether "total_price" is a verb or an adjective.
+
+
+notes: I did some major refactoring Friday and Saturday. I got stuck Friday morning when I realized I'd misunderstood the requirements about blocks (my blocks took a number representing the number of rooms they needed and then they went and found the first five or less rooms available for their time slot, instead of allowing a set of rooms to be passed in), and ended up going back to the drawing board and making CRC cards and essentially redesigning the whole system, and then changed what I had to fit the new design. So a lot of my refactoring was done before I'd even scrolled far enough to read about refactors.txt.
