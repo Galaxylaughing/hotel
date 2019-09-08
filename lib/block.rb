@@ -1,9 +1,9 @@
 module HotelBooking
   class Block
     
-    attr_reader :id, :dates, :price_per_night, :reservations, :room_total
+    attr_reader :id, :dates, :price_per_night, :reservations, :room_total, :rooms
     
-    attr_accessor :daterange_factory, :room_factory, :rooms
+    attr_accessor :daterange_factory, :room_factory
     
     def initialize(id:, room_numbers:, start_date: nil, end_date: nil, price_per_night:, room_source: nil)
       @id = id
