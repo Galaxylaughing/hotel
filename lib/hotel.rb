@@ -1,38 +1,26 @@
 module HotelBooking
   class Hotel
     
-    attr_reader :room_total, :price_per_night, :reservations, :max_rooms_per_block, :blocks
+    attr_reader :room_total, :price_per_night, :max_rooms_per_block, :blocks
     
-    attr_accessor :room_factory, :reservation_factory, :date_factory, :block_factory, :daterange_factory
+    attr_accessor :block_factory, :daterange_factory, :reservation_total
     
     def initialize(number_of_rooms:, price_per_night:, max_rooms_per_block: nil)
       @room_total = number_of_rooms
       @price_per_night = price_per_night
       @max_rooms_per_block = max_rooms_per_block
       
-      @reservations = []
-      
-      @room_factory = RoomFactory.new()
-      @reservation_factory = ReservationFactory.new()
       @daterange_factory = DateRangeFactory.new()
-      @date_factory = DateFactory.new()
       @block_factory = BlockFactory.new()
       
-      @blocks = load_default_block(number_of_rooms)
+      @reservation_total = 0
+      
+      @blocks = []
+      @blocks << load_default_block(Array(1..number_of_rooms))
     end
     
-    def load_default_block(number_of_rooms)
-      blocks = []
-      blocks << block_factory.make_block(id: 0, number_of_rooms: number_of_rooms, price_per_night: price_per_night)
-    end
-    
-    def find_by_room_number(room_number)
-      blocks[0].rooms.each do |hotel_room|
-        if hotel_room.number == room_number
-          return hotel_room
-        end
-      end
-      raise ArgumentError.new("No room found with the number #{room_number}")
+    def load_default_block(room_numbers)
+      return block_factory.make_block(id: 0, room_numbers: room_numbers, price_per_night: price_per_night)
     end
     
     def find_block_by_id(block_id)
@@ -44,86 +32,93 @@ module HotelBooking
       raise ArgumentError.new("No block found with the number #{block_id}")
     end
     
-    def find_reservation_by_date(start_date, end_date = nil)
-      overlapping_reservations = []
-      
-      range = daterange_factory.make_daterange(start_date: start_date, end_date: end_date)
-      
-      reservations.each do |reservation|
-        if range.overlaps?(reservation.dates)
-          overlapping_reservations << reservation
-        end
-      end
+    def find_reservations_by_date(date) 
+      default_block = get_default_block()
+      overlapping_reservations = default_block.find_reservations_by_date(date)
       
       return overlapping_reservations
     end
     
-    def add_reservation_to_list(reservation)
-      unless reservation.class == Reservation
-        raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{reservation}")
-      end
-      
-      reservations << reservation
+    def get_default_block()
+      return blocks[0]
     end
     
-    def create_block(number_of_rooms:, price_per_night:, start_date:, end_date:)
+    def create_block(room_numbers:, price_per_night:, start_date:, end_date:)
+      if room_numbers.length > max_rooms_per_block
+        raise ArgumentError.new("Expected a maximum of #{max_rooms_per_block} rooms, received #{room_numbers.length} rooms")
+      end
+      
+      dates = daterange_factory.make_daterange(start_date: start_date, end_date: end_date)
+      
+      blocks.each do |hotel_block|
+        next if (hotel_block.id == get_default_block().id)
+        if hotel_block.dates.overlaps?(dates)
+          room_list = hotel_block.list_rooms()
+          room_numbers.each do |room_number|
+            if room_list.include?(room_number)
+              raise ArgumentError.new("Block #{hotel_block.id} already contains room #{room_number} during this time")
+            end
+          end
+        end
+      end
+      
       block_id = blocks.length
       
-      new_block = block_factory.make_block(id: block_id, number_of_rooms: number_of_rooms, start_date: start_date, end_date: end_date, price_per_night: price_per_night)
-      
-      add_rooms_to_block(new_block)
+      new_block = block_factory.make_block(id: block_id, room_numbers: room_numbers, start_date: start_date, end_date: end_date, price_per_night: price_per_night, room_source: get_default_block)
       
       blocks << new_block
       
       return new_block
     end
     
-    def reserve_room(block_id: 0, start_date:, end_date:)
-      available_rooms = find_available_rooms(start_date: start_date, end_date: end_date)
-      chosen_room = available_rooms.first
-      
-      new_reservation = reservation_factory.make_reservation(room: chosen_room, start_date: start_date, end_date: end_date)
-      
-      chosen_room.reservations << new_reservation
-      reservations << new_reservation
-      
-      return new_reservation
+    def list_rooms()
+      source = get_default_block()
+      return source.list_rooms()
     end
     
-    def add_rooms_to_block(block)
-      available_rooms = find_available_rooms(start_date: block.dates.start_date, end_date: block.dates.end_date)
-      
-      index = 0
-      until block.rooms.length == block.room_total || block.rooms.length == block.room_total
-        block.rooms << available_rooms[index]
-        index += 1
+    def reserve_room(block_id: nil, room_number: nil, start_date:, end_date:)
+      if block_id.nil?
+        block = get_default_block()
+      else
+        block = find_block_by_id(block_id)
       end
-    end
-    
-    def find_available_rooms(start_date:, end_date:)
+      
+      self.reservation_total += 1
+      reservation_number = reservation_total
+      
       dates = daterange_factory.make_daterange(start_date: start_date, end_date: end_date)
       
-      available_rooms = []
-      
-      blocks[0].rooms.each do |hotel_room|
-        
-        blocks.each do |hotel_block|
-          if !(hotel_block.contains_room?(hotel_room)) && hotel_room.is_available?(dates)
-            available_rooms << hotel_room
+      blocks.each do |hotel_block|
+        if (block_id.nil? || block_id != hotel_block.id) && (hotel_block.id != get_default_block().id)
+          # does the block contain that room?
+          # does the block exist over these dates?
+          if hotel_block.find_room(room_number) && dates.overlaps?(hotel_block.dates)
+            raise ArgumentError.new("Room #{room_number} is in block #{hotel_block.id} during these dates")
           end
         end
-        
-        # if hotel_room.is_available?(dates)
-        #   available_rooms << hotel_room
-        # end
-        
       end
       
-      if available_rooms.length == 0
-        raise ArgumentError.new("There are no available rooms for these dates")
+      block.reserve_room(reservation_id: reservation_number, room_number: room_number, start_date: start_date, end_date: end_date)
+      
+      return reservation_number
+    end
+    
+    def find_available_rooms(block_id: nil, start_date: nil, end_date: nil)
+      if block_id
+        block = find_block_by_id(block_id)
+        available_rooms = block.all_available_rooms()
+      elsif start_date && end_date
+        available_rooms = get_default_block().all_available_rooms(start_date: start_date, end_date: end_date)
+      else
+        raise ArgumentError.new("Either a block id or a date range must be provided")
       end
       
       return available_rooms
+    end
+    
+    def find_price_of_reservation(reservation_id)
+      default_block = get_default_block()
+      return default_block.find_price_of_reservation(reservation_id)
     end
     
   end

@@ -5,7 +5,6 @@ require 'date'
 module HotelBooking; end
 
 # all of our data classes that live in the module
-require_relative "lib/datefactory"
 require_relative "lib/daterange"
 require_relative "lib/daterangefactory"
 require_relative "lib/reservation"

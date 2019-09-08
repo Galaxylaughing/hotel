@@ -3,26 +3,16 @@ require_relative 'test_helper'
 describe "Reservation" do
   
   describe "initialize" do
-    let(:room_one) {
-      HotelBooking::Room.new(1)
-    }
     let(:reservation) {
-      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
+      HotelBooking::Reservation.new(id: 10, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
     }
     
     it "creates a Reservation Object" do
       expect(reservation).must_be_instance_of HotelBooking::Reservation
     end
     
-    it "raises an exception if handed a non-Room" do
-      expect {
-        HotelBooking::Reservation.new(room: 1, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
-      }.must_raise ArgumentError
-    end
-    
-    # verifies initialized data was saved.
-    it "can read its room number" do
-      expect(reservation.room.number).must_equal 1
+    it "knows its ID" do
+      expect(reservation.id).must_equal 10
     end
     
     it "knows its price per night" do
@@ -43,7 +33,7 @@ describe "Reservation" do
     
   end
   
-  describe "#make_dates" do
+  describe ".make_dates" do
     let(:result) {
       HotelBooking::Reservation.make_dates(start_date: "august 1 2019", end_date: "august 3 2019")
     }
@@ -69,14 +59,11 @@ describe "Reservation" do
   end
   
   describe "#total_price" do
-    let(:room_one) {
-      HotelBooking::Room.new(1)
-    }
     let(:reservation_one) {
-      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
+      HotelBooking::Reservation.new(id: 11, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
     }
     let(:reservation_two) {
-      HotelBooking::Reservation.new(room: room_one, start_date: "august 1 2019", end_date: "august 30 2019", price_per_night: 200.00)
+      HotelBooking::Reservation.new(id: 12, start_date: "august 1 2019", end_date: "august 30 2019", price_per_night: 200.00)
     }
     
     it "returns a float" do
@@ -91,6 +78,33 @@ describe "Reservation" do
       expect(reservation_two.total_price).must_equal 5_800.00
     end
     
+  end
+  
+  describe "#includes_date" do
+    let(:start_date) {
+      "feb 3 2019"
+    }
+    let(:end_date) {
+      "feb 6 2019"
+    }
+    
+    it "should return true for date that occurs in the input's middle" do
+      reservation = HotelBooking::Reservation.new(id: 1, start_date: start_date, end_date: end_date, price_per_night: 200.00)
+      
+      expect(reservation.includes_date("feb 4 2019")).must_equal true
+    end
+    
+    it "should return: date that matches the input's check-in day" do
+      reservation = HotelBooking::Reservation.new(id: 1, start_date: start_date, end_date: end_date, price_per_night: 200.00)
+      
+      expect(reservation.includes_date(start_date)).must_equal true
+    end
+    
+    it "should NOT return: date that matches the input's check-out day" do
+      reservation = HotelBooking::Reservation.new(id: 1, start_date: start_date, end_date: end_date, price_per_night: 200.00)
+      
+      expect(reservation.includes_date(end_date)).must_equal false
+    end
   end
   
 end
