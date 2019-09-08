@@ -5,7 +5,7 @@ module HotelBooking
     
     attr_accessor :daterange_factory, :room_factory, :rooms
     
-    def initialize(id: 0, room_numbers:, start_date: nil, end_date: nil, price_per_night:, room_source: nil)
+    def initialize(id:, room_numbers:, start_date: nil, end_date: nil, price_per_night:, room_source: nil)
       @id = id
       @price_per_night = price_per_night
       @room_total = room_numbers.length
@@ -97,6 +97,7 @@ module HotelBooking
       rooms.each do |block_room|
         ids = block_room.find_reservations_by_date(date)
         if ids.length > 0
+          # .concat adds each item in ids to reservation_ids
           reservation_ids.concat(ids)
         end
       end
