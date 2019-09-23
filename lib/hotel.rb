@@ -1,12 +1,16 @@
 module HotelBooking
+  
+  class AlreadyReservedError < StandardError; end
+  class NonexistentIdError < StandardError; end
+  
   class Hotel
     
-    attr_reader :room_total, :price_per_night, :max_rooms_per_block, :blocks
+    attr_reader :room_count, :price_per_night, :max_rooms_per_block, :blocks
     
     attr_accessor :block_factory, :daterange_factory, :reservation_total
     
-    def initialize(number_of_rooms:, price_per_night:, max_rooms_per_block: nil)
-      @room_total = number_of_rooms
+    def initialize(room_count:, price_per_night:, max_rooms_per_block: nil)
+      @room_count = room_count
       @price_per_night = price_per_night
       @max_rooms_per_block = max_rooms_per_block
       
@@ -16,7 +20,7 @@ module HotelBooking
       @reservation_total = 0
       
       @blocks = []
-      @blocks << load_default_block(Array(1..number_of_rooms))
+      @blocks << load_default_block(Array(1..room_count))
     end
     
     def load_default_block(room_numbers)
@@ -29,7 +33,7 @@ module HotelBooking
           return hotel_block
         end
       end
-      raise ArgumentError.new("No block found with the number #{block_id}")
+      raise NonexistentIdError.new("No block found with the number #{block_id}")
     end
     
     def find_reservations_by_date(date) 
@@ -93,7 +97,7 @@ module HotelBooking
           # does the block contain that room?
           # does the block exist over these dates?
           if hotel_block.find_room(room_number) && dates.overlaps?(hotel_block.dates)
-            raise ArgumentError.new("Room #{room_number} is in block #{hotel_block.id} during these dates")
+            raise AlreadyReservedError.new("Room #{room_number} is in block #{hotel_block.id} during these dates")
           end
         end
       end

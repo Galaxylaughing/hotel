@@ -2,7 +2,7 @@
   
   describe "Hotel" do
     let(:hotel) {
-      HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
+      HotelBooking::Hotel.new(room_count: 20, price_per_night: 200.00, max_rooms_per_block: 5)
     }
     let(:room_two) {
       HotelBooking::Room.new(2)
@@ -67,13 +67,13 @@
       it "raises an error for nonexistent block IDs" do
         expect {
           hotel.find_block_by_id(40)
-        }.must_raise ArgumentError
+        }.must_raise StandardError
       end
       
       it "raises an error for invalid block IDs" do
         expect {
           hotel.find_block_by_id("cookie")
-        }.must_raise ArgumentError
+        }.must_raise StandardError
       end
     end
     
@@ -139,7 +139,7 @@
     describe "#create_block" do      
       
       it "adds each Block instance to the hotel list" do
-        new_hotel = HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
+        new_hotel = HotelBooking::Hotel.new(room_count: 20, price_per_night: 200.00, max_rooms_per_block: 5)
         
         new_hotel.create_block(room_numbers: Array(1..3), price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
         new_hotel.create_block(room_numbers: Array(1..5), price_per_night: 175.00, start_date: "june 1 2019", end_date: "june 10 2019")   
@@ -148,7 +148,7 @@
       end
       
       it "raises an exception for blocks with too many rooms" do
-        new_hotel = HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
+        new_hotel = HotelBooking::Hotel.new(room_count: 20, price_per_night: 200.00, max_rooms_per_block: 5)
         
         expect {
           new_hotel.create_block(room_numbers: Array(1..6), price_per_night: 150.00, start_date: "march 5 2019", end_date: "march 10 2019")
@@ -212,7 +212,7 @@
     describe "#list_rooms" do
       
       it "returns a list of room numbers" do
-        new_hotel = HotelBooking::Hotel.new(number_of_rooms: 20, price_per_night: 200.00, max_rooms_per_block: 5)
+        new_hotel = HotelBooking::Hotel.new(room_count: 20, price_per_night: 200.00, max_rooms_per_block: 5)
         
         room_list = new_hotel.list_rooms()
         
@@ -295,7 +295,7 @@
         
         expect {
           hotel.reserve_room(room_number: 3, start_date: "december 10 2019", end_date: "december 20 2019")
-        }.must_raise ArgumentError
+        }.must_raise StandardError
       end
       
       it "can't reserve a room that's already in another block during that block" do
@@ -303,7 +303,7 @@
         
         expect {
           hotel.reserve_room(room_number: 3, start_date: "december 14 2019", end_date: "december 18 2019")
-        }.must_raise ArgumentError
+        }.must_raise StandardError
       end
       
       it "can't reserve a room that's already in another block for a date that overlaps that block" do
@@ -311,7 +311,7 @@
         
         expect {
           hotel.reserve_room(room_number: 3, start_date: "december 19 2019", end_date: "december 25 2019")
-        }.must_raise ArgumentError
+        }.must_raise StandardError
       end
       
       it "CAN reserve a room for a duration that ends when a block begins" do

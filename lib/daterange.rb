@@ -1,7 +1,7 @@
 module HotelBooking
   class DateRange
     
-    attr_reader :start_date, :end_date, :nights
+    attr_reader :nights, :range
     
     def initialize(start_date:, end_date: nil)
       date_one = DateRange.make_date(start_date)
@@ -13,12 +13,20 @@ module HotelBooking
       end
       
       if DateRange.is_valid?(start_date: date_one, end_date: date_two)
-        @start_date = date_one
-        @end_date = date_two
+        # exclude the last day, which is check-out day.
+        @range = Range.new(date_one, date_two, exclude_end=true)
         @nights = DateRange.count_nights(start_date: date_one, end_date: date_two)
       else
         raise ArgumentError.new("Invalid date range; got #{start_date}, #{end_date}")
       end
+    end
+    
+    def start_date()
+      return range.begin
+    end
+    
+    def end_date()
+      return range.end
     end
     
     def self.make_date(date)
@@ -36,11 +44,15 @@ module HotelBooking
       return (end_date - start_date).to_i
     end
     
+    def includes?(date)
+      date = DateRange.new(start_date: date)
+      return self.overlaps?(date)
+    end
+    
     def overlaps?(other_range)
-      range_one = self.start_date...self.end_date
       range_two = other_range.start_date...other_range.end_date
       
-      overlap = range_one.cover?(range_two.first) || range_two.cover?(range_one.first)
+      overlap = range.cover?(range_two.first) || range_two.cover?(range.first)
       
       return overlap ? true : false
     end

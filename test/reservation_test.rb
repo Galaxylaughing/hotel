@@ -58,7 +58,7 @@ describe "Reservation" do
     
   end
   
-  describe "#total_price" do
+  describe "#get_total_price" do
     let(:reservation_one) {
       HotelBooking::Reservation.new(id: 11, start_date: "august 1 2019", end_date: "august 3 2019", price_per_night: 200.00)
     }
@@ -67,15 +67,15 @@ describe "Reservation" do
     }
     
     it "returns a float" do
-      expect(reservation_one.total_price).must_be_instance_of Float
+      expect(reservation_one.get_total_price).must_be_instance_of Float
     end
     
     it "can total the price for a short reservation" do
-      expect(reservation_one.total_price).must_equal 400.00
+      expect(reservation_one.get_total_price).must_equal 400.00
     end
     
     it "can total the price for a long reservation" do
-      expect(reservation_two.total_price).must_equal 5_800.00
+      expect(reservation_two.get_total_price).must_equal 5_800.00
     end
     
   end

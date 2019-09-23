@@ -13,14 +13,13 @@ module HotelBooking
       return DateRange.new(start_date: start_date, end_date: end_date)
     end
     
-    def total_price()
+    def get_total_price()
       total_price = price_per_night * dates.nights
       return total_price
     end
     
     def includes_date(date)
-      date = DateRange.new(start_date: date)
-      return dates.overlaps?(date)
+      return dates.includes?(date)
     end
     
   end  

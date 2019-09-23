@@ -55,7 +55,7 @@ describe "Room" do
       new_reservation = "august 10th"
       expect {
         room_one.add_reservation_to_list(new_reservation)
-      }.must_raise ArgumentError
+      }.must_raise StandardError
     end
     
   end
@@ -175,7 +175,7 @@ describe "Room" do
       
       expect {
         room.make_reservation(reservation_id: 2, start_date: "march 1 2019", end_date: "march 4 2019", price_per_night: 170.00)
-      }.must_raise ArgumentError
+      }.must_raise StandardError
     end
     
   end

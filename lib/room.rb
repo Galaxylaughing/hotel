@@ -18,7 +18,7 @@ module HotelBooking
     
     def add_reservation_to_list(new_reservation)
       unless new_reservation.class == Reservation
-        raise ArgumentError.new("Invalid reservation; expected Reservation instance, received #{new_reservation}")
+        raise AlreadyReservedError.new("Invalid reservation; expected Reservation instance, received #{new_reservation}")
       end
       
       reservations << new_reservation
@@ -37,7 +37,7 @@ module HotelBooking
     
     def make_reservation(reservation_id:, start_date:, end_date:, price_per_night:)
       if !(is_available?(start_date: start_date, end_date: end_date))
-        raise ArgumentError.new("This room already reserved during the provided time frame")
+        raise AlreadyReservedError.new("This room already reserved during the provided time frame")
       end
       
       new_reservation = reservation_factory.make_reservation(id: reservation_id, start_date: start_date, end_date: end_date, price_per_night: price_per_night)
@@ -61,7 +61,7 @@ module HotelBooking
       total_price = nil
       reservations.each do |room_reservation|
         if room_reservation.id == reservation_id
-          total_price = room_reservation.total_price()
+          total_price = room_reservation.get_total_price()
           break
         end
       end

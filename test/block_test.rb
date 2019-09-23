@@ -88,7 +88,7 @@ describe "Block" do
       
       expect {
         HotelBooking::Block.new(id: 2, room_numbers: [1, 5, 8, 7], start_date: "december 10 2019", end_date: "december 20 2019", price_per_night: 150.00, room_source: default_block)
-      }.must_raise ArgumentError
+      }.must_raise StandardError
     end
     
   end
@@ -144,13 +144,13 @@ describe "Block" do
     it "raises an exception for reservations outside the block's duration" do
       expect {
         block.reserve_room(reservation_id: 1, start_date: "march 1 2019", end_date: "march 4 2019")
-      }.must_raise ArgumentError
+      }.must_raise StandardError
     end
     
     it "raises an exception for reservations within but not equal to the block's duration" do
       expect {
         block.reserve_room(reservation_id: 1, start_date: "december 10 2019", end_date: "december 15 2019")
-      }.must_raise ArgumentError
+      }.must_raise StandardError
     end
     
     it "raises an exception if all of the rooms are unavailable" do
@@ -160,7 +160,7 @@ describe "Block" do
       
       expect {
         block.reserve_room(reservation_id: 2, start_date: "december 10 2019", end_date: "december 20 2019")
-      }.must_raise ArgumentError
+      }.must_raise StandardError
     end
     
   end
@@ -253,7 +253,7 @@ describe "Block" do
     it "raises an exception for a nonexistent reservation id" do
       expect {
         default_block.find_price_of_reservation(20)
-      }.must_raise ArgumentError
+      }.must_raise StandardError
     end
     
   end

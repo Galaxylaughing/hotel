@@ -1,20 +1,23 @@
 module HotelBooking
   class Block
     
-    attr_reader :id, :dates, :price_per_night, :reservations, :room_total, :rooms
+    class InvalidDurationError < StandardError; end
+    
+    attr_reader :id, :dates, :price_per_night, :room_count, :rooms
     
     attr_accessor :daterange_factory, :room_factory
     
     def initialize(id:, room_numbers:, start_date: nil, end_date: nil, price_per_night:, room_source: nil)
       @id = id
       @price_per_night = price_per_night
-      @room_total = room_numbers.length
+      @room_count = room_numbers.length
       
-      @reservations = []
       @daterange_factory = DateRangeFactory.new()
       @room_factory = RoomFactory.new()
       
-      if !(start_date.nil? && end_date.nil?)
+      # should allow a block without dates,
+      # since the default block has no set dates.
+      if !start_date.nil? && !end_date.nil?
         @dates = daterange_factory.make_daterange(start_date: start_date, end_date: end_date)
       end
       
@@ -40,7 +43,7 @@ module HotelBooking
           found_room = room_source.find_room(room_number)
           availability = found_room.is_available?(start_date: self.dates.start_date, end_date: self.dates.end_date)
           if !availability
-            raise ArgumentError.new("Room #{room_number} is not available")
+            raise AlreadyReservedError.new("Room #{room_number} is not available")
           end
           rooms_list << found_room
         end
@@ -54,14 +57,14 @@ module HotelBooking
         last_date = Date.parse(end_date)
         
         unless first_date == dates.start_date && last_date == dates.end_date
-          raise ArgumentError.new("Block reservations must be for the full duration of the block")
+          raise InvalidDurationError.new("Block reservations must be for the full duration of the block")
         end
       end
       
       available_rooms = all_available_rooms(start_date: start_date, end_date: end_date)
       
       if available_rooms.empty?
-        raise ArgumentError.new("There are no available rooms at this time")
+        raise AlreadyReservedError.new("There are no available rooms at this time")
       end
       
       if room_number.nil?
@@ -111,7 +114,7 @@ module HotelBooking
           return total
         end
       end
-      raise ArgumentError.new("There is no reservation with the id #{reservation_id}")
+      raise NonexistentIdError.new("There is no reservation with the id #{reservation_id}")
     end
     
   end
